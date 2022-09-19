@@ -355,6 +355,19 @@ static PyModuleDef module = {
     .m_size = -1,
     .m_methods = methods};
 
+static int
+_AddUnsignedIntConstant(PyObject *module, const char* name, uint64_t value)
+{
+    PyObject *obj = PyLong_FromUnsignedLongLong(value);
+    if (PyModule_AddObject(module, name, obj) < 0) {
+        Py_XDECREF(obj);
+        return -1;
+    }
+    return 0;
+}
+
+#define _AddUnsignedIntMacro(m,c) _AddUnsignedIntConstant(m, #c, c)
+
 PyMODINIT_FUNC PyInit_crc(void)
 {
 
@@ -363,6 +376,36 @@ PyMODINIT_FUNC PyInit_crc(void)
 
     if (module_p == NULL)
         return (NULL);
+    
+    _AddUnsignedIntMacro(module_p, CRC8_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC8_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC8_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC8_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC8H2F_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC8H2F_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC8H2F_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC8H2F_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC16_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC16_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC16_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC16_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC32_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC32_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC32_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC32_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC32P4_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC32P4_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC32P4_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC32P4_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC64_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC64_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC64_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC64_MAGIC_CHECK);
 
     return (module_p);
 }
