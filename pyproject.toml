@@ -38,3 +38,4 @@ version = {attr = "e2e.__version__"}
 test-requires = "pytest"
 test-command = "pytest {project}/test"
 build-frontend = "build"
+skip = "pp*"

@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         experimental: [false]
-        python-version: ["3.7", "3.11.0-alpha - 3.11.0" , "pypy-3.9"]
+        python-version: ["3.7", "3.11.0-alpha - 3.11.0"]
       fail-fast: false
 
     steps:
