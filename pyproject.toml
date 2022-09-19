@@ -1,0 +1,40 @@
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ["setuptools >= 62.0"]
+
+[project]
+name = "autosar-e2e"
+description = 'Python implementation of the AUTOSAR E2E Protocol'
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+keywords = [
+  "AUTOSAR", 
+  "E2E",
+  "automotive",
+]
+authors = [
+  { name = "Artur Drogunow", email = "artur.drogunow@zf.com" },
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://github.com/zariiii9003/autosar-e2e#readme"
+Issues = "https://github.com/zariiii9003/autosar-e2e/issues"
+Source = "https://github.com/zariiii9003/autosar-e2e"
+Homepage = "https://github.com/zariiii9003/autosar-e2e"
+
+[tool.setuptools.dynamic]
+version = {attr = "e2e.__version__"}
+
+[tool.cibuildwheel]
+test-requires = "pytest"
+test-command = "pytest {project}/test"
+build-frontend = "build"
