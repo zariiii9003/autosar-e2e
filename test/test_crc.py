@@ -23,6 +23,15 @@ def test_calculate_crc8():
     assert 0x8C == e2e.crc.calculate_crc8(b"\x92\x6B\x55")
     assert 0x74 == e2e.crc.calculate_crc8(b"\xFF\xFF\xFF\xFF")
 
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC8_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc8(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0xCB == crc
+
 def test_calculate_crc8_h2f():
     # test check
     assert e2e.crc.CRC8H2F_CHECK == e2e.crc.calculate_crc8_h2f(b"123456789")
@@ -44,6 +53,15 @@ def test_calculate_crc8_h2f():
     assert 0x11 == e2e.crc.calculate_crc8_h2f(b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF")
     assert 0x33 == e2e.crc.calculate_crc8_h2f(b"\x92\x6B\x55")
     assert 0x6C == e2e.crc.calculate_crc8_h2f(b"\xFF\xFF\xFF\xFF")
+
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC8H2F_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc8_h2f(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0x11 == crc
 
 def test_calculate_crc16():
     # test check
@@ -67,6 +85,46 @@ def test_calculate_crc16():
     assert 0x0745 == e2e.crc.calculate_crc16(b"\x92\x6B\x55")
     assert 0x1D0F == e2e.crc.calculate_crc16(b"\xFF\xFF\xFF\xFF")
 
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC16_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc16(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0xF53F == crc
+
+def test_calculate_crc16_arc():
+    # test check
+    assert e2e.crc.CRC16ARC_CHECK == e2e.crc.calculate_crc16_arc(b"123456789")
+
+    # test magic check
+    assert 0x0000 == e2e.crc.calculate_crc16_arc(b"\x00\x00\x00\x00")
+    assert (
+        e2e.crc.CRC16ARC_MAGIC_CHECK 
+        == e2e.crc.calculate_crc16_arc(b"\x00\x00\x00\x00\x00\x00") ^ e2e.crc.CRC16ARC_XOR_VALUE
+    )
+
+    # test different input types
+    assert 0x0000 == e2e.crc.calculate_crc16_arc(bytearray(b"\x00\x00\x00\x00"))
+    assert 0x0000 == e2e.crc.calculate_crc16_arc(b"\x00\x00\x00\x00")
+
+    assert 0xC2E1 == e2e.crc.calculate_crc16_arc(b"\xF2\x01\x83")
+    assert 0x0BE3 == e2e.crc.calculate_crc16_arc(b"\x0F\xAA\x00\x55")
+    assert 0x6CCF == e2e.crc.calculate_crc16_arc(b"\x00\xFF\x55\x11")
+    assert 0xAE98 == e2e.crc.calculate_crc16_arc(b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF")
+    assert 0xE24E == e2e.crc.calculate_crc16_arc(b"\x92\x6B\x55")
+    assert 0x9401 == e2e.crc.calculate_crc16_arc(b"\xFF\xFF\xFF\xFF")
+
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC16ARC_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc16_arc(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0xAE98 == crc
+
 def test_calculate_crc32():
     # test check
     assert e2e.crc.CRC32_CHECK == e2e.crc.calculate_crc32(b"123456789")
@@ -88,6 +146,15 @@ def test_calculate_crc32():
     assert 0xB0AE863D == e2e.crc.calculate_crc32(b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF")
     assert 0x9CDEA29B == e2e.crc.calculate_crc32(b"\x92\x6B\x55")
     assert 0xFFFFFFFF == e2e.crc.calculate_crc32(b"\xFF\xFF\xFF\xFF")
+
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC32_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc32(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0xB0AE863D == crc
 
 def test_calculate_crc32_p4():
     # test check
@@ -114,6 +181,15 @@ def test_calculate_crc32_p4():
     assert 0xEE688A78 == e2e.crc.calculate_crc32_p4(b"\x92\x6B\x55")
     assert 0xFFFFFFFF == e2e.crc.calculate_crc32_p4(b"\xFF\xFF\xFF\xFF")
 
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC32P4_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc32_p4(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0xA65A343D == crc
+
 def test_calculate_crc64():
     # test check
     assert e2e.crc.CRC64_CHECK == e2e.crc.calculate_crc64(b"123456789")
@@ -138,4 +214,13 @@ def test_calculate_crc64():
     assert 0x701ECEB219A8E5D5 == e2e.crc.calculate_crc64(b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF")
     assert 0x5FAA96A9B59F3E4E == e2e.crc.calculate_crc64(b"\x92\x6B\x55")
     assert 0xFFFFFFFF00000000 == e2e.crc.calculate_crc64(b"\xFF\xFF\xFF\xFF")
+
+    # test start_value and first_call
+    first_call = True
+    crc = e2e.crc.CRC64_INITIAL_VALUE
+    data = b"\x33\x22\x55\xAA\xBB\xCC\xDD\xEE\xFF"
+    for i, _val in enumerate(data):
+        crc = e2e.crc.calculate_crc64(data[i:i+1], start_value=crc, first_call=first_call)
+        first_call = False
+    assert 0x701ECEB219A8E5D5 == crc
 # fmt: on

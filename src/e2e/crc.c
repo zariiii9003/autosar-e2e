@@ -84,6 +84,30 @@ uint16_t Crc_CalculateCRC16(
     return (crc ^ CRC16_XOR_VALUE);
 }
 
+uint16_t Crc_CalculateCRC16ARC(
+    const uint8_t *Crc_DataPtr,
+    uint32_t Crc_Length,
+    uint16_t Crc_StartValue16,
+    bool Crc_IsFirstCall)
+{
+    uint16_t crc;
+
+    if (Crc_IsFirstCall)
+    {
+        crc = CRC16ARC_INITIAL_VALUE;
+    }
+    else
+    {
+        crc = (CRC16ARC_XOR_VALUE ^ Crc_StartValue16);
+    }
+
+    for (size_t i = 0; i < Crc_Length; ++i)
+    {
+        crc = (crc >> 8) ^ CRC16ARC_TABLE[(crc ^ Crc_DataPtr[i]) & 0xFFu];
+    }
+    return (crc ^ CRC16ARC_XOR_VALUE);
+}
+
 uint32_t Crc_CalculateCRC32(
     const uint8_t *Crc_DataPtr,
     uint32_t Crc_Length,
@@ -240,6 +264,33 @@ py_calculate_crc16(PyObject *module,
 }
 
 static PyObject *
+py_calculate_crc16_arc(PyObject *module,
+                   PyObject *args,
+                   PyObject *kwargs)
+{
+    Py_buffer data;
+    uint16_t start_value = CRC16ARC_INITIAL_VALUE;
+    bool first_call = true;
+    static char *kwlist[] = {
+        "data",
+        "start_value",
+        "first_call",
+        NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc16_arc",
+                                     kwlist, &data, &start_value, &first_call))
+    {
+        return NULL;
+    }
+
+    uint16_t crc = Crc_CalculateCRC16ARC(data.buf, data.len, start_value, first_call);
+
+    PyBuffer_Release(&data);
+
+    return (PyLong_FromUnsignedLong(crc));
+}
+
+static PyObject *
 py_calculate_crc32(PyObject *module,
                    PyObject *args,
                    PyObject *kwargs)
@@ -333,6 +384,10 @@ static struct PyMethodDef methods[] = {
      py_calculate_crc16,
      METH_VARARGS | METH_KEYWORDS,
      "16-bit CCITT-FALSE CRC16"},
+    {"calculate_crc16_arc",
+     py_calculate_crc16_arc,
+     METH_VARARGS | METH_KEYWORDS,
+     "16-bit 0x8005 polynomial CRC calculation"},
     {"calculate_crc32",
      py_calculate_crc32,
      METH_VARARGS | METH_KEYWORDS,
@@ -391,6 +446,11 @@ PyMODINIT_FUNC PyInit_crc(void)
     _AddUnsignedIntMacro(module_p, CRC16_XOR_VALUE);
     _AddUnsignedIntMacro(module_p, CRC16_CHECK);
     _AddUnsignedIntMacro(module_p, CRC16_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module_p, CRC16ARC_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC16ARC_XOR_VALUE);
+    _AddUnsignedIntMacro(module_p, CRC16ARC_CHECK);
+    _AddUnsignedIntMacro(module_p, CRC16ARC_MAGIC_CHECK);
 
     _AddUnsignedIntMacro(module_p, CRC32_INITIAL_VALUE);
     _AddUnsignedIntMacro(module_p, CRC32_XOR_VALUE);

@@ -9,6 +9,9 @@ def calculate_crc8_h2f(
 def calculate_crc16(
     data: bytes, start_value: int = 0xFFFF, first_call: bool = True
 ) -> int: ...
+def calculate_crc16_arc(
+    data: bytes, start_value: int = 0x0000, first_call: bool = True
+) -> int: ...
 def calculate_crc32(
     data: bytes, start_value: int = 0xFFFFFFFF, first_call: bool = True
 ) -> int: ...
@@ -33,6 +36,11 @@ CRC16_INITIAL_VALUE: typing.Final[int]
 CRC16_XOR_VALUE: typing.Final[int]
 CRC16_CHECK: typing.Final[int]
 CRC16_MAGIC_CHECK: typing.Final[int]
+
+CRC16ARC_INITIAL_VALUE: typing.Final[int]
+CRC16ARC_XOR_VALUE: typing.Final[int]
+CRC16ARC_CHECK: typing.Final[int]
+CRC16ARC_MAGIC_CHECK: typing.Final[int]
 
 CRC32_INITIAL_VALUE: typing.Final[int]
 CRC32_XOR_VALUE: typing.Final[int]
