@@ -1,5 +1,6 @@
 import e2e.crc
 
+
 # fmt: off
 def test_calculate_crc8():
     # test check
@@ -32,6 +33,7 @@ def test_calculate_crc8():
         first_call = False
     assert 0xCB == crc
 
+
 def test_calculate_crc8_h2f():
     # test check
     assert e2e.crc.CRC8H2F_CHECK == e2e.crc.calculate_crc8_h2f(b"123456789")
@@ -62,6 +64,7 @@ def test_calculate_crc8_h2f():
         crc = e2e.crc.calculate_crc8_h2f(data[i:i+1], start_value=crc, first_call=first_call)
         first_call = False
     assert 0x11 == crc
+
 
 def test_calculate_crc16():
     # test check
@@ -94,6 +97,7 @@ def test_calculate_crc16():
         first_call = False
     assert 0xF53F == crc
 
+
 def test_calculate_crc16_arc():
     # test check
     assert e2e.crc.CRC16ARC_CHECK == e2e.crc.calculate_crc16_arc(b"123456789")
@@ -125,6 +129,7 @@ def test_calculate_crc16_arc():
         first_call = False
     assert 0xAE98 == crc
 
+
 def test_calculate_crc32():
     # test check
     assert e2e.crc.CRC32_CHECK == e2e.crc.calculate_crc32(b"123456789")
@@ -155,6 +160,7 @@ def test_calculate_crc32():
         crc = e2e.crc.calculate_crc32(data[i:i+1], start_value=crc, first_call=first_call)
         first_call = False
     assert 0xB0AE863D == crc
+
 
 def test_calculate_crc32_p4():
     # test check
@@ -189,6 +195,7 @@ def test_calculate_crc32_p4():
         crc = e2e.crc.calculate_crc32_p4(data[i:i+1], start_value=crc, first_call=first_call)
         first_call = False
     assert 0xA65A343D == crc
+
 
 def test_calculate_crc64():
     # test check
