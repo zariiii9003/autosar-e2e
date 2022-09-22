@@ -272,7 +272,7 @@ static const uint32_t CRC32P4_TABLE[256] = {
     0x191BE6A5uL, 0x299EE950uL, 0x7811F94FuL, 0x4894F6BAuL, 0xDB0FD971uL, 0xEB8AD684uL, 0xBA05C69BuL, 0x8A80C96EuL,
     0x0C8DF352uL, 0x3C08FCA7uL, 0x6D87ECB8uL, 0x5D02E34DuL, 0xCE99CC86uL, 0xFE1CC373uL, 0xAF93D36CuL, 0x9F16DC99uL};
 
-static uint32_t Crc_CalculateCRC32P4(
+uint32_t Crc_CalculateCRC32P4(
     const uint8_t *Crc_DataPtr,
     uint32_t Crc_Length,
     uint32_t Crc_StartValue32,
