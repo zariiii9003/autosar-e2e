@@ -8,10 +8,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define CRC8_INITIAL_VALUE 0xFFu
-#define CRC8_XOR_VALUE 0xFFu
-#define CRC8_CHECK 0x4Bu
-#define CRC8_MAGIC_CHECK 0xC4u
+#define CRC8_INITIAL_VALUE (uint8_t)0xFFu
+#define CRC8_XOR_VALUE (uint8_t)0xFFu
+#define CRC8_CHECK (uint8_t)0x4Bu
+#define CRC8_MAGIC_CHECK (uint8_t)0xC4u
 
 static const uint8_t CRC8_TABLE[256] = {
     0x00u, 0x1du, 0x3au, 0x27u, 0x74u, 0x69u, 0x4eu, 0x53u,
@@ -53,10 +53,10 @@ uint8_t Crc_CalculateCRC8(
     uint8_t Crc_StartValue8,
     bool Crc_IsFirstCall);
 
-#define CRC8H2F_INITIAL_VALUE 0xFFu
-#define CRC8H2F_XOR_VALUE 0xFFu
-#define CRC8H2F_CHECK 0xDFu
-#define CRC8H2F_MAGIC_CHECK 0x42u
+#define CRC8H2F_INITIAL_VALUE (uint8_t)0xFFu
+#define CRC8H2F_XOR_VALUE (uint8_t)0xFFu
+#define CRC8H2F_CHECK (uint8_t)0xDFu
+#define CRC8H2F_MAGIC_CHECK (uint8_t)0x42u
 
 static const uint8_t CRC8H2F_TABLE[256] = {
     0x00u, 0x2fu, 0x5eu, 0x71u, 0xbcu, 0x93u, 0xe2u, 0xcdu,
@@ -98,10 +98,10 @@ uint8_t Crc_CalculateCRC8H2F(
     uint8_t Crc_StartValue8H2F,
     bool Crc_IsFirstCall);
 
-#define CRC16_INITIAL_VALUE 0xFFFFu
-#define CRC16_XOR_VALUE 0x0000u
-#define CRC16_CHECK 0x29B1u
-#define CRC16_MAGIC_CHECK 0x0000u
+#define CRC16_INITIAL_VALUE (uint16_t)0xFFFFu
+#define CRC16_XOR_VALUE (uint16_t)0x0000u
+#define CRC16_CHECK (uint16_t)0x29B1u
+#define CRC16_MAGIC_CHECK (uint16_t)0x0000u
 
 static const uint16_t CRC16_TABLE[256] = {
     0x0000u, 0x1021u, 0x2042u, 0x3063u, 0x4084u, 0x50A5u, 0x60C6u, 0x70E7u,
@@ -143,10 +143,10 @@ uint16_t Crc_CalculateCRC16(
     uint16_t Crc_StartValue16,
     bool Crc_IsFirstCall);
 
-#define CRC16ARC_INITIAL_VALUE 0x0000u
-#define CRC16ARC_XOR_VALUE 0x0000u
-#define CRC16ARC_CHECK 0xBB3Du
-#define CRC16ARC_MAGIC_CHECK 0x0000u
+#define CRC16ARC_INITIAL_VALUE (uint16_t)0x0000u
+#define CRC16ARC_XOR_VALUE (uint16_t)0x0000u
+#define CRC16ARC_CHECK (uint16_t)0xBB3Du
+#define CRC16ARC_MAGIC_CHECK (uint16_t)0x0000u
 
 static const uint16_t CRC16ARC_TABLE[256] = {
     0x0000u, 0xC0C1u, 0xC181u, 0x0140u, 0xC301u, 0x03C0u, 0x0280u, 0xC241u,
@@ -183,15 +183,15 @@ static const uint16_t CRC16ARC_TABLE[256] = {
     0x8201u, 0x42C0u, 0x4380u, 0x8341u, 0x4100u, 0x81C1u, 0x8081u, 0x4040u};
 
 uint16_t Crc_CalculateCRC16ARC(
-    const uint8_t *Crc_DataPtr, 
-    uint32_t Crc_Length, 
-    uint16_t Crc_StartValue16, 
+    const uint8_t *Crc_DataPtr,
+    uint32_t Crc_Length,
+    uint16_t Crc_StartValue16,
     bool Crc_IsFirstCall);
 
-#define CRC32_INITIAL_VALUE 0xFFFFFFFFu
-#define CRC32_XOR_VALUE 0xFFFFFFFFu
-#define CRC32_CHECK 0xCBF43926u
-#define CRC32_MAGIC_CHECK 0xDEBB20E3u
+#define CRC32_INITIAL_VALUE (uint32_t)0xFFFFFFFFuL
+#define CRC32_XOR_VALUE (uint32_t)0xFFFFFFFFuL
+#define CRC32_CHECK (uint32_t)0xCBF43926uL
+#define CRC32_MAGIC_CHECK (uint32_t)0xDEBB20E3uL
 
 static const uint32_t CRC32_TABLE[256] = {
     0x00000000uL, 0x77073096uL, 0xEE0E612CuL, 0x990951BAuL, 0x076DC419uL, 0x706AF48FuL, 0xE963A535uL, 0x9E6495A3uL,
@@ -233,10 +233,10 @@ uint32_t Crc_CalculateCRC32(
     uint32_t Crc_StartValue32,
     bool Crc_IsFirstCall);
 
-#define CRC32P4_INITIAL_VALUE 0xFFFFFFFFu
-#define CRC32P4_XOR_VALUE 0xFFFFFFFFu
-#define CRC32P4_CHECK 0x1697D06Au
-#define CRC32P4_MAGIC_CHECK 0x904CDDBFu
+#define CRC32P4_INITIAL_VALUE (uint32_t)0xFFFFFFFFuL
+#define CRC32P4_XOR_VALUE (uint32_t)0xFFFFFFFFuL
+#define CRC32P4_CHECK (uint32_t)0x1697D06AuL
+#define CRC32P4_MAGIC_CHECK (uint32_t)0x904CDDBFuL
 
 static const uint32_t CRC32P4_TABLE[256] = {
     0x00000000uL, 0x30850FF5uL, 0x610A1FEAuL, 0x518F101FuL, 0xC2143FD4uL, 0xF2913021uL, 0xA31E203EuL, 0x939B2FCBuL,
@@ -278,10 +278,10 @@ static uint32_t Crc_CalculateCRC32P4(
     uint32_t Crc_StartValue32,
     bool Crc_IsFirstCall);
 
-#define CRC64_INITIAL_VALUE 0xFFFFFFFFFFFFFFFFu
-#define CRC64_XOR_VALUE 0xFFFFFFFFFFFFFFFFu
-#define CRC64_CHECK 0x995DC9BBDF1939FAu
-#define CRC64_MAGIC_CHECK 0x49958C9ABD7D353Fu
+#define CRC64_INITIAL_VALUE (uint64_t)0xFFFFFFFFFFFFFFFFuLL
+#define CRC64_XOR_VALUE (uint64_t)0xFFFFFFFFFFFFFFFFuLL
+#define CRC64_CHECK (uint64_t)0x995DC9BBDF1939FAuLL
+#define CRC64_MAGIC_CHECK (uint64_t)0x49958C9ABD7D353FuLL
 
 static const uint64_t CRC64_TABLE[256] = {
     0x0000000000000000uLL, 0xB32E4CBE03A75F6FuLL, 0xF4843657A840A05BuLL, 0x47AA7AE9ABE7FF34uLL,

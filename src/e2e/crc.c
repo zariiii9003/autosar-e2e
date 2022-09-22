@@ -189,21 +189,24 @@ py_calculate_crc8(PyObject *module,
                   PyObject *kwargs)
 {
     Py_buffer data;
-    uint8_t start_value = CRC8_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned char start_value = CRC8_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc8",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Bp:calculate_crc8",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint8_t crc = Crc_CalculateCRC8(data.buf, data.len, start_value, first_call);
+    uint8_t crc = Crc_CalculateCRC8((uint8_t*)data.buf, 
+                                    (uint32_t)data.len, 
+                                    (uint8_t)start_value, 
+                                    (bool)first_call);
     PyBuffer_Release(&data);
 
     return (PyLong_FromUnsignedLong(crc));
@@ -215,21 +218,24 @@ py_calculate_crc8_h2f(PyObject *module,
                       PyObject *kwargs)
 {
     Py_buffer data;
-    uint8_t start_value = CRC8H2F_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned char start_value = CRC8H2F_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc8_h2f",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Bp:calculate_crc8_h2f",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint8_t crc = Crc_CalculateCRC8H2F(data.buf, data.len, start_value, first_call);
+    uint8_t crc = Crc_CalculateCRC8H2F((uint8_t*)data.buf, 
+                                       (uint32_t)data.len, 
+                                       (uint8_t)start_value, 
+                                       (bool)first_call);
 
     PyBuffer_Release(&data);
 
@@ -242,21 +248,24 @@ py_calculate_crc16(PyObject *module,
                    PyObject *kwargs)
 {
     Py_buffer data;
-    uint16_t start_value = CRC16_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned short start_value = CRC16_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc16",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Hp:calculate_crc16",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint16_t crc = Crc_CalculateCRC16(data.buf, data.len, start_value, first_call);
+    uint16_t crc = Crc_CalculateCRC16((uint8_t*)data.buf, 
+                                      (uint32_t)data.len, 
+                                      (uint16_t)start_value, 
+                                      (bool)first_call);
 
     PyBuffer_Release(&data);
 
@@ -269,22 +278,24 @@ py_calculate_crc16_arc(PyObject *module,
                    PyObject *kwargs)
 {
     Py_buffer data;
-    uint16_t start_value = CRC16ARC_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned short start_value = CRC16ARC_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc16_arc",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Hp:calculate_crc16_arc",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint16_t crc = Crc_CalculateCRC16ARC(data.buf, data.len, start_value, first_call);
-
+    uint16_t crc = Crc_CalculateCRC16ARC((uint8_t*)data.buf, 
+                                         (uint32_t)data.len, 
+                                         (uint16_t)start_value, 
+                                         (bool)first_call);
     PyBuffer_Release(&data);
 
     return (PyLong_FromUnsignedLong(crc));
@@ -296,22 +307,24 @@ py_calculate_crc32(PyObject *module,
                    PyObject *kwargs)
 {
     Py_buffer data;
-    uint32_t start_value = CRC32_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned long start_value = CRC32_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc32",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|kp:calculate_crc32",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint32_t crc = Crc_CalculateCRC32(data.buf, data.len, start_value, first_call);
-
+    uint32_t crc = Crc_CalculateCRC32((uint8_t*)data.buf, 
+                                      (uint32_t)data.len, 
+                                      (uint32_t)start_value, 
+                                      (bool)first_call);
     PyBuffer_Release(&data);
 
     return (PyLong_FromUnsignedLong(crc));
@@ -323,22 +336,24 @@ py_calculate_crc32_p4(PyObject *module,
                       PyObject *kwargs)
 {
     Py_buffer data;
-    uint32_t start_value = CRC32P4_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned long start_value = CRC32P4_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
         "first_call",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|Ip:calculate_crc32_p4",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*|kp:calculate_crc32_p4",
                                      kwlist, &data, &start_value, &first_call))
     {
         return NULL;
     }
 
-    uint32_t crc = Crc_CalculateCRC32P4(data.buf, data.len, start_value, first_call);
-
+    uint32_t crc = Crc_CalculateCRC32P4((uint8_t*)data.buf, 
+                                        (uint32_t)data.len, 
+                                        (uint32_t)start_value, 
+                                        (bool)first_call);
     PyBuffer_Release(&data);
 
     return (PyLong_FromUnsignedLong(crc));
@@ -350,8 +365,8 @@ py_calculate_crc64(PyObject *module,
                    PyObject *kwargs)
 {
     Py_buffer data;
-    uint64_t start_value = CRC64_INITIAL_VALUE;
-    bool first_call = true;
+    unsigned long long start_value = CRC64_INITIAL_VALUE;
+    int first_call = true;
     static char *kwlist[] = {
         "data",
         "start_value",
@@ -364,8 +379,10 @@ py_calculate_crc64(PyObject *module,
         return NULL;
     }
 
-    uint64_t crc = Crc_CalculateCRC64(data.buf, data.len, start_value, first_call);
-
+    uint64_t crc = Crc_CalculateCRC64((uint8_t*)data.buf, 
+                                      (uint32_t)data.len, 
+                                      (uint64_t)start_value, 
+                                      (bool)first_call);
     PyBuffer_Release(&data);
 
     return (PyLong_FromUnsignedLongLong(crc));
