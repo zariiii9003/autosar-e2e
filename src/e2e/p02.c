@@ -32,9 +32,9 @@ py_e2e_p02_protect(PyObject *module,
                    PyObject *kwargs)
 {
     Py_buffer data;
-    uint32_t length;
+    unsigned long length;
     Py_buffer data_id_list;
-    bool increment = true;
+    int increment = true;
 
     static char *kwlist[] = {
         "data",
@@ -43,7 +43,7 @@ py_e2e_p02_protect(PyObject *module,
         "increment_counter",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*Iy*|p:py_e2e_p02_protect",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*ky*|p:py_e2e_p02_protect",
                                      kwlist, &data, &length, &data_id_list, &increment))
     {
         return NULL;
@@ -75,13 +75,13 @@ py_e2e_p02_protect(PyObject *module,
     // increment counter
     uint8_t counter = data_ptr[1] & 0x0Fu;
     if (increment) {
-        counter = (counter + 1) % 16;
+        counter = (counter + 1) % 16u;
         data_ptr[1] = (data_ptr[1] & 0xF0u) | counter;
     }
 
     // calculate CRC
-    uint8_t crc = Crc_CalculateCRC8H2F(data_ptr + 1, length, 0xFFu, true);
-    crc = Crc_CalculateCRC8H2F(&data_id_ptr[counter], 1u, crc, false);
+    uint8_t crc = Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)length, CRC8H2F_INITIAL_VALUE, true);
+    crc = Crc_CalculateCRC8H2F(data_id_ptr + counter, 1u, crc, false);
     data_ptr[0] = crc;
 
     PyBuffer_Release(&data);
@@ -115,9 +115,8 @@ py_e2e_p02_check(PyObject *module,
                  PyObject *kwargs)
 {
     Py_buffer data;
-    uint32_t length;
+    unsigned long length;
     Py_buffer data_id_list;
-    bool increment = true;
 
     static char *kwlist[] = {
         "data",
@@ -125,7 +124,7 @@ py_e2e_p02_check(PyObject *module,
         "data_id_list",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*Iy*:py_e2e_p02_protect",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*ky*:py_e2e_p02_protect",
                                      kwlist, &data, &length, &data_id_list))
     {
         return NULL;
@@ -154,8 +153,8 @@ py_e2e_p02_check(PyObject *module,
     uint8_t counter = data_ptr[1] & 0x0Fu;
 
     // calculate CRC
-    uint8_t crc = Crc_CalculateCRC8H2F(data_ptr + 1, length, 0xFFu, true);
-    crc = Crc_CalculateCRC8H2F(&data_id_ptr[counter], 1u, crc, false);
+    uint8_t crc = Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)length, CRC8H2F_INITIAL_VALUE, true);
+    crc = Crc_CalculateCRC8H2F(data_id_ptr + counter, 1u, crc, false);
 
     PyBuffer_Release(&data);
     PyBuffer_Release(&data_id_list);

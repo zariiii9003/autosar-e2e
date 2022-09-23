@@ -15,6 +15,12 @@ def test_e2e_p02_protect():
     e2e.p02.e2e_p02_protect(data, length, data_id_list)
     assert b"\xbc\x02\x02\x03\x04\x05\x06\x07" == bytes(data)
 
+    data = bytearray(range(8))
+    length = len(data) - 1
+    data_id_list = bytes(range(16))
+    e2e.p02.e2e_p02_protect(data, length, data_id_list, increment_counter=False)
+    assert b"\x61\x01\x02\x03\x04\x05\x06\x07" == bytes(data)
+
 
 def test_e2e_p02_check():
     data = bytearray(range(8))
