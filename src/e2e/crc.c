@@ -183,6 +183,21 @@ uint64_t Crc_CalculateCRC64(
     return (crc ^ CRC64_XOR_VALUE);
 }
 
+PyDoc_STRVAR(py_calculate_crc8_doc,
+             "calculate_crc8(data: bytes, start_value: int = 0xFF, first_call: bool = True) -> int\n"
+             "8-bit SAE J1850 CRC Calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc8(PyObject *module,
                   PyObject *args,
@@ -212,6 +227,21 @@ py_calculate_crc8(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc8_h2f_doc,
+             "calculate_crc8_h2f(data: bytes, start_value: int = 0xFF, first_call: bool = True) -> int\n"
+             "8-bit 0x2F polynomial CRC Calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc8_h2f(PyObject *module,
                       PyObject *args,
@@ -242,6 +272,21 @@ py_calculate_crc8_h2f(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc16_doc,
+             "calculate_crc16(data: bytes, start_value: int = 0xFFFF, first_call: bool = True) -> int\n"
+             "16-bit CCITT-FALSE CRC16\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc16(PyObject *module,
                    PyObject *args,
@@ -272,6 +317,21 @@ py_calculate_crc16(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc16_arc_doc,
+             "calculate_crc16_arc(data: bytes, start_value: int = 0x0000, first_call: bool = True) -> int\n"
+             "16-bit 0x8005 polynomial CRC calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc16_arc(PyObject *module,
                    PyObject *args,
@@ -301,6 +361,21 @@ py_calculate_crc16_arc(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc32_doc,
+             "calculate_crc32(data: bytes, start_value: int = 0xFFFFFFFF, first_call: bool = True) -> int\n"
+             "32-bit Ethernet CRC Calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc32(PyObject *module,
                    PyObject *args,
@@ -330,6 +405,21 @@ py_calculate_crc32(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc32_p4_doc,
+             "calculate_crc32_p4(data: bytes, start_value: int = 0xFFFFFFFF, first_call: bool = True) -> int\n"
+             "32-bit 0xF4ACFB13 polynomial CRC calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc32_p4(PyObject *module,
                       PyObject *args,
@@ -359,6 +449,21 @@ py_calculate_crc32_p4(PyObject *module,
     return (PyLong_FromUnsignedLong(crc));
 }
 
+PyDoc_STRVAR(py_calculate_crc64_doc,
+             "calculate_crc64(data: bytes, start_value: int = 0xFFFFFFFFFFFFFFFF, first_call: bool = True) -> int\n"
+             "64-bit 0x42F0E1EBA9EA3693 polynomial CRC calculation\n"
+             "\n"
+             ":param bytes data:\n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    which contains the data for CRC calculation\n"
+             ":param int start_value:\n"
+             "    First CRC of the algorithm (ignored when *first_call* is `True`).\n"
+             "    In a sequence, this is expected to be the return value of the previous function call.\n"
+             ":param bool first_call:\n"
+             "    `True` if this is the first call of a sequence or an individual function call.\n"
+             "    `False` if this is a subsequent call in a sequence.\n"
+             ":return:\n"
+             "    CRC value");
 static PyObject *
 py_calculate_crc64(PyObject *module,
                    PyObject *args,
@@ -392,31 +497,31 @@ static struct PyMethodDef methods[] = {
     {"calculate_crc8",
      py_calculate_crc8,
      METH_VARARGS | METH_KEYWORDS,
-     "8-bit SAE J1850 CRC Calculation"},
+     py_calculate_crc8_doc},
     {"calculate_crc8_h2f",
      py_calculate_crc8_h2f,
      METH_VARARGS | METH_KEYWORDS,
-     "8-bit 0x2F polynomial CRC Calculation"},
+     py_calculate_crc8_h2f_doc},
     {"calculate_crc16",
      py_calculate_crc16,
      METH_VARARGS | METH_KEYWORDS,
-     "16-bit CCITT-FALSE CRC16"},
+     py_calculate_crc16_doc},
     {"calculate_crc16_arc",
      py_calculate_crc16_arc,
      METH_VARARGS | METH_KEYWORDS,
-     "16-bit 0x8005 polynomial CRC calculation"},
+     py_calculate_crc16_arc_doc},
     {"calculate_crc32",
      py_calculate_crc32,
      METH_VARARGS | METH_KEYWORDS,
-     "32-bit Ethernet CRC Calculation"},
+     py_calculate_crc32_doc},
     {"calculate_crc32_p4",
      py_calculate_crc32_p4,
      METH_VARARGS | METH_KEYWORDS,
-     "32-bit 0xF4ACFB13 polynomial CRC calculation"},
+     py_calculate_crc32_p4_doc},
     {"calculate_crc64",
      py_calculate_crc64,
      METH_VARARGS | METH_KEYWORDS,
-     "64-bit 0x42F0E1EBA9EA3693 polynomial CRC calculation"},
+     py_calculate_crc64_doc},
     {NULL} // sentinel
 };
 

@@ -11,20 +11,20 @@
 #include "crc.h"
 
 PyDoc_STRVAR(e2e_p02_protect_doc,
-"e2e_p02_protect(data: bytearray, length: int, data_id_list: bytes, increment_counter: bool = True) -> None \n\
-\n\
-Calculate CRC inplace according to AUTOSAR E2E Profile 2. \n\
-\n\
-:param data: \n\
-    bytearray starting with the CRC byte. This bytearray will be updated inplace. \n\
-:param length: \n\
-    Data byte count over which the CRC must be calculated. `length` must fulfill \n\
-    the following condition: 1 <= length <= len(data) \n\
-:param data_id_list: \n\
-    A bytes object of length 16 which is used to protect against maquerading. \n\
-:param increment_counter: \n\
-    If True the counter in byte 1 will be incremented before calculating the CRC. \n\
-");
+             "e2e_p02_protect(data: bytearray, length: int, data_id_list: bytes, increment_counter: bool = True) -> None \n"
+             "Calculate CRC inplace according to AUTOSAR E2E Profile 2. \n"
+             "\n"
+             ":param bytearray data: \n"
+             "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    starting with the CRC byte. This CRC byte will be updated inplace. \n"
+             ":param int length: \n"
+             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
+             "    the following condition: ``1 <= length < len(data)`` \n"
+             ":param bytes data_id_list: \n"
+             "    A `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    of length 16 which is used to protect against masquerading. \n"
+             ":param bool increment_counter: \n"
+             "    If `True` the counter in byte 1 will be incremented before calculating the CRC. \n");
 
 static PyObject *
 py_e2e_p02_protect(PyObject *module,
@@ -60,7 +60,7 @@ py_e2e_p02_protect(PyObject *module,
     }
     if (length < 1 || length > data.len - 1)
     {
-        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length <= len(data).");
+        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length < len(data).");
         goto error;
     }
     if (data_id_list.len != 16)
@@ -96,18 +96,20 @@ error:
 }
 
 PyDoc_STRVAR(e2e_p02_check_doc,
-"e2e_p02_check(data: bytes, length: int, data_id_list: bytes) -> bool \n\
-\n\
-Return True if CRC is correct according to AUTOSAR E2E Profile 2. \n\
-\n\
-:param data: \n\
-    bytes-like object starting with the CRC byte. \n\
-:param length: \n\
-    Data byte count over which the CRC must be calculated. `length` must fulfill \n\
-    the following condition: 1 <= length <= len(data) \n\
-:param data_id_list: \n\
-    A bytes object of length 16 which is used to protect against maquerading. \n\
-");
+             "e2e_p02_check(data: bytes, length: int, data_id_list: bytes) -> bool \n"
+             "Return True if CRC is correct according to AUTOSAR E2E Profile 2. \n"
+             "\n"
+             ":param data: \n"
+             "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    starting with the CRC byte. \n"
+             ":param length: \n"
+             "    Data byte count over which the CRC must be calculated. `length` must fulfill \n"
+             "    the following condition: ``1 <= length < len(data)`` \n"
+             ":param data_id_list: \n"
+             "    A `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
+             "    of length 16 which is used to protect against masquerading. \n"
+             ":return:\n"
+             "    `True` if CRC is valid, otherwise return `False`");
 
 static PyObject *
 py_e2e_p02_check(PyObject *module,
@@ -137,7 +139,7 @@ py_e2e_p02_check(PyObject *module,
     }
     if (length < 1 || length > data.len - 1)
     {
-        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length <= len(data).");
+        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length < len(data).");
         goto error;
     }
     if (data_id_list.len != 16)

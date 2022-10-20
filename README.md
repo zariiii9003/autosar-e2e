@@ -2,6 +2,9 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/autosar-e2e.svg)](https://pypi.org/project/autosar-e2e)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/autosar-e2e.svg)](https://pypi.org/project/autosar-e2e)
+[![Documentation Status](https://readthedocs.org/projects/autosar-e2e/badge/?version=latest)](https://autosar-e2e.readthedocs.io/en/latest/?badge=latest)
+
+The documentation is available [here](https://autosar-e2e.readthedocs.io/en/latest/).
 
 -----
 
@@ -51,15 +54,16 @@ crc_correct: bool = e2e.p02.e2e_p02_check(data, length, data_id_list)
 ## Test
 
 ```console
-pip install tox
-tox
+pip install pipx
+pipx run tox
 ```
 
 ## Build
 
 ```console
-pip install build
-python -m build .
+pip install pipx
+pipx run build
+pipx run twine check dist/*
 ```
 
 ## License
