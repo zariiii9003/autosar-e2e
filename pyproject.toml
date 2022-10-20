@@ -19,20 +19,30 @@ authors = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = []
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/zariiii9003/autosar-e2e#readme"
+Documentation = "https://autosar-e2e.readthedocs.io/en/latest"
 Issues = "https://github.com/zariiii9003/autosar-e2e/issues"
 Source = "https://github.com/zariiii9003/autosar-e2e"
 Homepage = "https://github.com/zariiii9003/autosar-e2e"
 
 [tool.setuptools.dynamic]
 version = {attr = "e2e.__version__"}
+
+[tool.setuptools.package-data]
+"*" = [
+  "**/py.typed",
+  "**.pyi",
+]
 
 [tool.cibuildwheel]
 test-requires = "pytest"
