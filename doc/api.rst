@@ -4,6 +4,28 @@ Library API
 E2E Profiles
 ^^^^^^^^^^^^
 
+Profile 01
+""""""""""
+
+.. autofunction:: e2e.p01.e2e_p01_protect
+.. autofunction:: e2e.p01.e2e_p01_check
+
+.. data:: e2e.p01.E2E_P01_DATAID_BOTH
+   :type: typing.Final[int]
+   :value: 0x00
+
+.. data:: e2e.p01.E2E_P01_DATAID_ALT
+   :type: typing.Final[int]
+   :value: 0x01
+
+.. data:: e2e.p01.E2E_P01_DATAID_LOW
+   :type: typing.Final[int]
+   :value: 0x02
+
+.. data:: e2e.p01.E2E_P01_DATAID_NIBBLE
+   :type: typing.Final[int]
+   :value: 0x03
+
 Profile 02
 """"""""""
 

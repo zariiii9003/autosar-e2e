@@ -13,7 +13,14 @@ crc_module = Extension(
     sources=[str(pkg_dir / "crc.c")],
     include_dirs=[pkg_dir.as_posix()],
 )
-
+p01_module = Extension(
+    f"{import_pkg_name}.p01",
+    sources=[
+        str(pkg_dir / "p01.c"),
+        str(pkg_dir / "crc.c"),
+    ],
+    include_dirs=[pkg_dir.as_posix()],
+)
 p02_module = Extension(
     f"{import_pkg_name}.p02",
     sources=[
@@ -26,6 +33,7 @@ p02_module = Extension(
 setup(
     ext_modules=[
         crc_module,
+        p01_module,
         p02_module,
     ],
 )
