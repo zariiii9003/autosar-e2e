@@ -43,7 +43,7 @@ py_e2e_p02_protect(PyObject *module,
         "increment_counter",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*ky*|p:py_e2e_p02_protect",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*ky*|p:e2e_p02_protect",
                                      kwlist, &data, &length, &data_id_list, &increment))
     {
         return NULL;
@@ -97,7 +97,7 @@ error:
 
 PyDoc_STRVAR(e2e_p02_check_doc,
              "e2e_p02_check(data: bytes, length: int, data_id_list: bytes) -> bool \n"
-             "Return True if CRC is correct according to AUTOSAR E2E Profile 2. \n"
+             "Return ``True`` if CRC is correct according to AUTOSAR E2E Profile 2. \n"
              "\n"
              ":param data: \n"
              "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
