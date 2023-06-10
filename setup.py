@@ -29,11 +29,20 @@ p02_module = Extension(
     ],
     include_dirs=[pkg_dir.as_posix()],
 )
+p05_module = Extension(
+    f"{import_pkg_name}.p05",
+    sources=[
+        str(pkg_dir / "p05.c"),
+        str(pkg_dir / "crc.c"),
+    ],
+    include_dirs=[pkg_dir.as_posix()],
+)
 
 setup(
     ext_modules=[
         crc_module,
         p01_module,
         p02_module,
+        p05_module,
     ],
 )
