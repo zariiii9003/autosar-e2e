@@ -147,7 +147,7 @@ py_e2e_p05_check(PyObject *module,
         "offset",
         NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*HH|$Hp:e2e_p05_check",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*HH|$H:e2e_p05_check",
                                      kwlist, &data, &length, &data_id, &offset))
     {
         return NULL;
