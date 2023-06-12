@@ -82,7 +82,7 @@ PyDoc_STRVAR(e2e_p01_protect_doc,
              "    starting with the CRC byte. This CRC byte will be updated inplace. \n"
              ":param int length: \n"
              "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``1 <= length < len(data)`` \n"
+             "    the following condition: ``1 <= length <= len(data) - 1`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
              ":param int data_id_mode: \n"
@@ -126,14 +126,14 @@ py_e2e_p01_protect(PyObject *module,
         PyErr_SetString(PyExc_ValueError, "\"data\" must be mutable. Use a bytearray or any object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len < 2)
+    if (data.len <= 2)
     {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
         goto error;
     }
     if (length < 1 || length > data.len - 1)
     {
-        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length < len(data).");
+        PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length <= len(data) - 1.");
         goto error;
     }
 
