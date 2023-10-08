@@ -1,10 +1,13 @@
 name: Build & Release
 
-on: [push, pull_request]
+on:
+  release:
+    types: [ published ]
+  pull_request:
+  push:
 
 env:
   PY_COLORS: "1"
-
 
 jobs:
   build_wheels:
