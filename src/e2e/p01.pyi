@@ -13,8 +13,6 @@ def e2e_p01_protect(
     data_id_mode: int = E2E_P01_DATAID_BOTH,
     increment_counter: bool = True,
 ) -> None: ...
-
-# def e2e_p01_check(data: bytes, length: int, data_id: int) -> bool: ...
 def e2e_p01_check(
     data: bytearray,
     length: int,
