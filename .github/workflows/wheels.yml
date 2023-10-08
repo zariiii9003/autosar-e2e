@@ -55,8 +55,8 @@ jobs:
     needs: [ build_wheels, build_sdist ]
     runs-on: ubuntu-latest
 
-    # create a new release for tagged commits
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    # upload to PyPI only on release
+    if: github.event.release && github.event.action == 'published'
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -67,8 +67,3 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
