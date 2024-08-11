@@ -55,8 +55,3 @@ jobs:
       - name: Build documentation
         run: |
           python -m sphinx -W -an doc build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: sphinx-out
-          path: ./build/
-          retention-days: 5
