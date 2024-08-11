@@ -34,8 +34,9 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
+          name: wheels
           path: ./wheelhouse/*.whl
 
   build_sdist:
@@ -52,24 +53,33 @@ jobs:
       - name: Build sdist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
+          name: sdist
           path: dist/*.tar.gz
 
   upload_pypi:
     name: Create release
     needs: [ build_wheels, build_sdist ]
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/autosar_e2e
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      contents: write  # for action-gh-release
 
     # upload to PyPI only on release
     if: github.event.release && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
+          name: wheels
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdist
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
