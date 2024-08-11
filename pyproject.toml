@@ -40,6 +40,7 @@ Homepage = "https://github.com/zariiii9003/autosar-e2e"
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
 sdist.include = ["src/e2e/_version.py"]
 wheel.packages = ["src/e2e"]
+wheel.py-api = "cp311"
 
 [tool.setuptools_scm]  # Section required
 write_to = "src/e2e/_version.py"
