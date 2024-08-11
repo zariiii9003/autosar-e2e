@@ -294,11 +294,11 @@ error:
 
 static struct PyMethodDef methods[] = {
     {"e2e_p01_protect",
-     py_e2e_p01_protect,
+     (PyCFunction)py_e2e_p01_protect,
      METH_VARARGS | METH_KEYWORDS,
      e2e_p01_protect_doc},
     {"e2e_p01_check",
-     py_e2e_p01_check,
+     (PyCFunction)py_e2e_p01_check,
      METH_VARARGS | METH_KEYWORDS,
      e2e_p01_check_doc},
     {NULL} // sentinel
