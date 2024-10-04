@@ -32,6 +32,12 @@ Profile 02
 .. autofunction:: e2e.p02.e2e_p02_protect
 .. autofunction:: e2e.p02.e2e_p02_check
 
+Profile 04
+""""""""""
+
+.. autofunction:: e2e.p04.e2e_p04_protect
+.. autofunction:: e2e.p04.e2e_p04_check
+
 Profile 05
 """"""""""
 

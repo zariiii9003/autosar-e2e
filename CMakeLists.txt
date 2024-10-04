@@ -23,6 +23,11 @@ if(NOT "${SKBUILD_SABI_COMPONENT}" STREQUAL "")
                        ${CMAKE_SOURCE_DIR}/src/e2e/p02.c
                        ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
                        WITH_SOABI USE_SABI 3.11)
+    python_add_library(p04
+                       MODULE
+                       ${CMAKE_SOURCE_DIR}/src/e2e/p04.c
+                       ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
+                       WITH_SOABI USE_SABI 3.11)
     python_add_library(p05
                        MODULE
                        ${CMAKE_SOURCE_DIR}/src/e2e/p05.c
@@ -43,6 +48,11 @@ else()
                        ${CMAKE_SOURCE_DIR}/src/e2e/p02.c
                        ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
                        WITH_SOABI)
+    python_add_library(p04
+                       MODULE
+                       ${CMAKE_SOURCE_DIR}/src/e2e/p04.c
+                       ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
+                       WITH_SOABI)
     python_add_library(p05
                        MODULE
                        ${CMAKE_SOURCE_DIR}/src/e2e/p05.c
@@ -50,4 +60,4 @@ else()
                        WITH_SOABI)
 endif()
 
-install(TARGETS crc p01 p02 p05 LIBRARY DESTINATION e2e)
+install(TARGETS crc p01 p02 p04 p05 LIBRARY DESTINATION e2e)
