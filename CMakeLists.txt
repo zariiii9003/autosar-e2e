@@ -9,52 +9,40 @@ find_package(Python
              ${SKBUILD_SABI_COMPONENT})
 
 if(NOT "${SKBUILD_SABI_COMPONENT}" STREQUAL "")
-    python_add_library(crc
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c
-                       WITH_SOABI USE_SABI 3.11)
-    python_add_library(p01
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p01.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c
-                       WITH_SOABI USE_SABI 3.11)
-    python_add_library(p02
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p02.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c
-                       WITH_SOABI USE_SABI 3.11)
-    python_add_library(p04
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p04.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c
-                       WITH_SOABI USE_SABI 3.11)
-    python_add_library(p05
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p05.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c
-                       WITH_SOABI USE_SABI 3.11)
+    set(PY_ABI_OPTIONS "WITH_SOABI" "USE_SABI" "3.11")
 else()
-    python_add_library(crc
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
-    python_add_library(p01
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p01.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
-    python_add_library(p02
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p02.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
-    python_add_library(p04
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p04.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
-    python_add_library(p05
-                       MODULE
-                       ${CMAKE_SOURCE_DIR}/src/e2e/p05.c
-                       ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
+    set(PY_ABI_OPTIONS "")
 endif()
+
+python_add_library(crc
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
+                   ${PY_ABI_OPTIONS})
+python_add_library(p01
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/p01.c
+                   ${PY_ABI_OPTIONS})
+python_add_library(p02
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/p02.c
+                   ${PY_ABI_OPTIONS})
+python_add_library(p04
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/p04.c
+                   ${PY_ABI_OPTIONS})
+python_add_library(p05
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/p05.c
+                   ${PY_ABI_OPTIONS})
+
+# Add libraries
+add_library(crclib STATIC ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
+
+# Link against util
+target_link_libraries(crc PRIVATE crclib)
+target_link_libraries(p01 PRIVATE crclib)
+target_link_libraries(p02 PRIVATE crclib)
+target_link_libraries(p04 PRIVATE crclib)
+target_link_libraries(p05 PRIVATE crclib)
 
 install(TARGETS crc p01 p02 p04 p05 LIBRARY DESTINATION e2e)
