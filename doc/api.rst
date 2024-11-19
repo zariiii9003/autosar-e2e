@@ -44,6 +44,12 @@ Profile 05
 .. autofunction:: e2e.p05.e2e_p05_protect
 .. autofunction:: e2e.p05.e2e_p05_check
 
+Profile 07
+""""""""""
+
+.. autofunction:: e2e.p07.e2e_p07_protect
+.. autofunction:: e2e.p07.e2e_p07_check
+
 CRC Functions
 ^^^^^^^^^^^^^
 
