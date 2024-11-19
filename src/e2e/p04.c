@@ -9,20 +9,33 @@
 #include <stdint.h>
 
 #include "crclib.h"
+#include "util.h"
 
-uint32_t compute_p04_crc(uint8_t *data_ptr, 
+#define P04LENGTH_POS  0
+#define P04LENGTH_LEN  2
+#define P04COUNTER_POS 2
+#define P04COUNTER_LEN 2
+#define P04DATAID_POS  4
+#define P04DATAID_LEN  4
+#define P04CRC_POS     8
+#define P04CRC_LEN     4
+#define P04HEADER_LEN  (P04LENGTH_LEN+P04COUNTER_LEN+P04DATAID_LEN+P04CRC_LEN)
+
+uint32_t compute_p04_crc(uint8_t *data_ptr,
                          uint16_t length, 
                          uint16_t offset)
 {
     uint32_t crc;
 
     // bytes before crc bytes
-    uint32_t crc_offset = (uint32_t)(offset + 8u);
+    uint32_t crc_offset = (uint32_t)(offset + P04CRC_POS);
     crc = Crc_CalculateCRC32P4(data_ptr, crc_offset, CRC32P4_INITIAL_VALUE, true);
 
     // bytes after crc bytes, if any
-    if (offset + 12u < length){
-        crc = Crc_CalculateCRC32P4(&data_ptr[crc_offset + 4u], (uint32_t)(length - (offset + 12u)), crc, false);
+    if (offset + P04HEADER_LEN < length){
+        uint8_t * second_part_ptr = data_ptr + offset + P04HEADER_LEN;
+        uint32_t second_part_length = length - offset - P04HEADER_LEN;
+        crc = Crc_CalculateCRC32P4(second_part_ptr, second_part_length, crc, false);
     }
     return crc;
 }
@@ -72,17 +85,17 @@ py_e2e_p04_protect(PyObject *module,
         PyErr_SetString(PyExc_ValueError, "\"data\" must be mutable. Use a bytearray or any object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len < 12)
+    if (data.len < P04HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than or equal to 12.");
         goto error;
     }
-    if (length < 12 || length > data.len)
+    if (length < P04HEADER_LEN || length > data.len)
     {
         PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 12 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - 12)
+    if (offset > data.len - P04HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
@@ -91,29 +104,21 @@ py_e2e_p04_protect(PyObject *module,
     uint8_t *data_ptr = (uint8_t *)data.buf;
 
     // write length
-    data_ptr[offset] = (uint8_t)(length >> 8u);
-    data_ptr[offset + 1u] = (uint8_t)(length);
+    uint16_to_bigendian(data_ptr + offset + P04LENGTH_POS, length);
 
     // increment counter
     if (increment) {
-        uint16_t counter = ((uint16_t)(data_ptr[offset + 2u]) << 8u) + (uint16_t)(data_ptr[offset + 3u]);
+        uint16_t counter = bigendian_to_uint16(data_ptr + offset + P04COUNTER_POS);
         counter++;
-        data_ptr[offset + 2u] = (uint8_t)((counter >> 8u));
-        data_ptr[offset + 3u] = (uint8_t)(counter & 0xFF);
+        uint16_to_bigendian(data_ptr + offset + P04COUNTER_POS, counter);
     }
 
     // write data_id
-    data_ptr[offset + 4u] = (uint8_t)(data_id >> 24u);
-    data_ptr[offset + 5u] = (uint8_t)(data_id >> 16u);
-    data_ptr[offset + 6u] = (uint8_t)(data_id >> 8u);
-    data_ptr[offset + 7u] = (uint8_t)(data_id);
+    uint32_to_bigendian(data_ptr + offset + P04DATAID_POS, data_id);
 
     // calculate CRC
     uint32_t crc = compute_p04_crc(data_ptr, length, offset);
-    data_ptr[offset + 8u] = (uint8_t)(crc >> 24u);
-    data_ptr[offset + 9u] = (uint8_t)(crc >> 16u);
-    data_ptr[offset + 10u] = (uint8_t)(crc >> 8u);
-    data_ptr[offset + 11u] = (uint8_t)(crc);
+    uint32_to_bigendian(data_ptr + offset + P04CRC_POS, crc);
 
     PyBuffer_Release(&data);
 
@@ -162,17 +167,17 @@ py_e2e_p04_check(PyObject *module,
     {
         return NULL;
     }
-    if (data.len < 12)
+    if (data.len < P04HEADER_LEN)
     {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater orequal to 12.");
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater or equal to 12.");
         goto error;
     }
-    if (length < 12 || length > data.len)
+    if (length < P04HEADER_LEN || length > data.len)
     {
         PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 12 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - 12)
+    if (offset > data.len - P04HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
@@ -181,23 +186,13 @@ py_e2e_p04_check(PyObject *module,
     uint8_t *data_ptr = (uint8_t *)data.buf;
 
     // read length
-    uint16_t length_actual = (
-        ((uint16_t)(data_ptr[offset]) << 8u)
-         + (uint16_t)(data_ptr[offset + 1u]));
+    uint16_t length_actual = bigendian_to_uint16(data_ptr + offset + P04LENGTH_POS);
 
     // read data_id
-    uint32_t data_id_actual = (
-        ((uint32_t)(data_ptr[offset + 4u]) << 24u)
-        + ((uint32_t)(data_ptr[offset + 5u]) << 16u)
-        + ((uint32_t)(data_ptr[offset + 6u]) << 8u)
-        + (uint32_t)(data_ptr[offset + 7u]));
+    uint32_t data_id_actual = bigendian_to_uint32(data_ptr + offset + P04DATAID_POS);
 
     // read crc
-    uint32_t crc_actual = (
-        ((uint32_t)(data_ptr[offset + 8u]) << 24u)
-        + ((uint32_t)(data_ptr[offset + 9u]) << 16u)
-        + ((uint32_t)(data_ptr[offset + 10u]) << 8u)
-        + (uint32_t)(data_ptr[offset + 11u]));
+    uint32_t crc_actual = bigendian_to_uint32(data_ptr + offset + P04CRC_POS);
 
     // calculate CRC
     uint32_t crc = compute_p04_crc(data_ptr, length, offset);
