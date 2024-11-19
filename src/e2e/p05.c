@@ -8,24 +8,36 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "crc.h"
+#include "crclib.h"
+#include "util.h"
+
+#define P05LENGTH_POS 0
+#define P05LENGTH_LEN 0
+#define P05COUNTER_POS 2
+#define P05COUNTER_LEN 1
+#define P05DATAID_POS 0
+#define P05DATAID_LEN 0
+#define P05CRC_POS 0
+#define P05CRC_LEN 2
+#define P05HEADER_LEN (P05CRC_LEN+P05COUNTER_LEN)
 
 uint16_t compute_p05_crc(uint8_t *data_ptr, 
                          uint16_t length, 
                          uint16_t data_id, 
                          uint16_t offset)
 {
+    // 'length' does not contain CRC
     uint16_t crc;
     uint8_t data_id_lo_byte = (uint8_t)data_id;
     uint8_t data_id_hi_byte = (uint8_t)(data_id >> 8);
     if (offset > 0)
     {
         crc = Crc_CalculateCRC16(data_ptr, offset, CRC16_INITIAL_VALUE, true);
-        crc = Crc_CalculateCRC16(&data_ptr[offset + 2u], length - offset, crc, false);
+        crc = Crc_CalculateCRC16(&data_ptr[offset + P05COUNTER_POS], length - offset, crc, false);
     }
     else
     {
-        crc = Crc_CalculateCRC16(&data_ptr[offset + 2u], length - offset, CRC16_INITIAL_VALUE, true);
+        crc = Crc_CalculateCRC16(&data_ptr[P05COUNTER_POS], length, CRC16_INITIAL_VALUE, true);
     }
     crc = Crc_CalculateCRC16(&data_id_lo_byte, 1, crc, false);
     crc = Crc_CalculateCRC16(&data_id_hi_byte, 1, crc, false);
@@ -78,17 +90,17 @@ py_e2e_p05_protect(PyObject *module,
         PyErr_SetString(PyExc_ValueError, "\"data\" must be mutable. Use a bytearray or any object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len <= 3)
+    if (data.len <= P05HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 3.");
         goto error;
     }
-    if (length < 1 || length > data.len - 2)
+    if (length < P05COUNTER_LEN || length > data.len - P05CRC_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length <= len(data) - 2.");
         goto error;
     }
-    if (offset > data.len - 3)
+    if (offset > data.len - P05HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
@@ -98,12 +110,11 @@ py_e2e_p05_protect(PyObject *module,
 
     // increment counter
     if (increment) {
-        data_ptr[offset + 2u]++;
+        data_ptr[offset + P05COUNTER_POS]++;
     }
     // calculate CRC
     uint16_t crc = compute_p05_crc(data_ptr, length, data_id, offset);
-    data_ptr[offset] = (uint8_t)crc;
-    data_ptr[offset + 1] = (uint8_t)(crc >> 8);
+    uint16_to_littleendian(data_ptr + offset + P05CRC_POS, crc);
 
     PyBuffer_Release(&data);
 
@@ -153,17 +164,17 @@ py_e2e_p05_check(PyObject *module,
         return NULL;
     }
 
-    if (data.len <= 3)
+    if (data.len <= P05HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 3.");
         goto error;
     }
-    if (length < 1 || length > data.len - 2)
+    if (length < P05COUNTER_LEN || length > data.len - P05CRC_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Parameter \"length\" must fulfill the following condition: 1 <= length <= len(data) - 2.");
         goto error;
     }
-    if (offset > data.len - 3)
+    if (offset > data.len - P05HEADER_LEN)
     {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
@@ -173,10 +184,11 @@ py_e2e_p05_check(PyObject *module,
 
     // calculate CRC
     uint16_t crc = compute_p05_crc(data_ptr, length, data_id, offset);
+    uint16_t crc_actual = littleendian_to_uint16(data_ptr + offset + P05CRC_POS);
 
     PyBuffer_Release(&data);
 
-    if ((data_ptr[offset] == (uint8_t)crc) && (data_ptr[offset + 1u] == (uint8_t)(crc >> 8)))
+    if (crc == crc_actual)
     {
         Py_RETURN_TRUE;
     }

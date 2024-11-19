@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "crc.h"
+#include "crclib.h"
 
 #define E2E_P01_DATAID_BOTH 0x0
 #define E2E_P01_DATAID_ALT 0x1

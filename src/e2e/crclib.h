@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: MIT */
 
-#ifndef CRC_H
-#define CRC_H
+#ifndef CRCLIB_H
+#define CRCLIB_H
 
 #include <stdbool.h>
 #include <stdint.h>
