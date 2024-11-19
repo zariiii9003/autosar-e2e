@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "crc.h"
+#include "crclib.h"
 
 uint32_t compute_p04_crc(uint8_t *data_ptr, 
                          uint16_t length, 

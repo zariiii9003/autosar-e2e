@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "crc.h"
+#include "crclib.h"
 
 PyDoc_STRVAR(e2e_p02_protect_doc,
              "e2e_p02_protect(data: bytearray, length: int, data_id_list: bytes, *, increment_counter: bool = True) -> None \n"
