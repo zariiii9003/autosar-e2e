@@ -48,6 +48,6 @@ target_link_libraries(crc PRIVATE crclib)
 target_link_libraries(p01 PRIVATE crclib)
 target_link_libraries(p02 PRIVATE crclib)
 target_link_libraries(p04 PRIVATE crclib util)
-target_link_libraries(p05 PRIVATE crclib)
+target_link_libraries(p05 PRIVATE crclib util)
 
 install(TARGETS crc p01 p02 p04 p05 LIBRARY DESTINATION e2e)
