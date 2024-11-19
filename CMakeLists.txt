@@ -37,6 +37,7 @@ if(NOT "${SKBUILD_SABI_COMPONENT}" STREQUAL "")
 else()
     python_add_library(crc
                        MODULE
+                       ${CMAKE_SOURCE_DIR}/src/e2e/crc.c
                        ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
     python_add_library(p01
                        MODULE
