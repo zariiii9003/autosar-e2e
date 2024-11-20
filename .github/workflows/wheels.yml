@@ -1,8 +1,6 @@
 name: Build & Release
 
 on:
-  release:
-    types: [ published ]
   pull_request:
   push:
 
