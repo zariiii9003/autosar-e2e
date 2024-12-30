@@ -9,7 +9,7 @@ def test_calculate_crc8():
     # test magic check
     assert 0x59 == e2e.crc.calculate_crc8(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC8_MAGIC_CHECK 
+        e2e.crc.CRC8_MAGIC_CHECK
         == e2e.crc.calculate_crc8(b"\x00\x00\x00\x00\x59") ^ e2e.crc.CRC8_XOR_VALUE
     )
 
@@ -41,7 +41,7 @@ def test_calculate_crc8_h2f():
     # test magic check
     assert 0x12 == e2e.crc.calculate_crc8_h2f(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC8H2F_MAGIC_CHECK 
+        e2e.crc.CRC8H2F_MAGIC_CHECK
         == e2e.crc.calculate_crc8_h2f(b"\x00\x00\x00\x00\x12") ^ e2e.crc.CRC8H2F_XOR_VALUE
     )
 
@@ -73,7 +73,7 @@ def test_calculate_crc16():
     # test magic check
     assert 0x84C0 == e2e.crc.calculate_crc16(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC16_MAGIC_CHECK 
+        e2e.crc.CRC16_MAGIC_CHECK
         == e2e.crc.calculate_crc16(b"\x00\x00\x00\x00\x84\xC0") ^ e2e.crc.CRC16_XOR_VALUE
     )
 
@@ -105,7 +105,7 @@ def test_calculate_crc16_arc():
     # test magic check
     assert 0x0000 == e2e.crc.calculate_crc16_arc(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC16ARC_MAGIC_CHECK 
+        e2e.crc.CRC16ARC_MAGIC_CHECK
         == e2e.crc.calculate_crc16_arc(b"\x00\x00\x00\x00\x00\x00") ^ e2e.crc.CRC16ARC_XOR_VALUE
     )
 
@@ -137,7 +137,7 @@ def test_calculate_crc32():
     # test magic check
     assert 0x2144DF1C == e2e.crc.calculate_crc32(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC32_MAGIC_CHECK 
+        e2e.crc.CRC32_MAGIC_CHECK
         == e2e.crc.calculate_crc32(b"\x00\x00\x00\x00\x1C\xDF\x44\x21") ^ e2e.crc.CRC32_XOR_VALUE
     )
 
@@ -169,9 +169,9 @@ def test_calculate_crc32_p4():
     # test magic check
     assert 0x6FB32240 == e2e.crc.calculate_crc32_p4(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC32P4_MAGIC_CHECK 
+        e2e.crc.CRC32P4_MAGIC_CHECK
         == (
-            e2e.crc.calculate_crc32_p4(b"\x00\x00\x00\x00\x40\x22\xB3\x6F") 
+            e2e.crc.calculate_crc32_p4(b"\x00\x00\x00\x00\x40\x22\xB3\x6F")
             ^ e2e.crc.CRC32P4_XOR_VALUE
         )
     )
@@ -204,9 +204,9 @@ def test_calculate_crc64():
     # test magic check
     assert 0xF4A586351E1B9F4B == e2e.crc.calculate_crc64(b"\x00\x00\x00\x00")
     assert (
-        e2e.crc.CRC64_MAGIC_CHECK 
+        e2e.crc.CRC64_MAGIC_CHECK
         == (
-            e2e.crc.calculate_crc64(b"\x00\x00\x00\x00\x4B\x9F\x1B\x1E\x35\x86\xA5\xF4") 
+            e2e.crc.calculate_crc64(b"\x00\x00\x00\x00\x4B\x9F\x1B\x1E\x35\x86\xA5\xF4")
             ^ e2e.crc.CRC64_XOR_VALUE
         )
     )

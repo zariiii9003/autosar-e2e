@@ -45,9 +45,9 @@ py_calculate_crc8(PyObject *module,
         return NULL;
     }
 
-    uint8_t crc = Crc_CalculateCRC8((uint8_t*)data.buf, 
-                                    (uint32_t)data.len, 
-                                    (uint8_t)start_value, 
+    uint8_t crc = Crc_CalculateCRC8((uint8_t*)data.buf,
+                                    (uint32_t)data.len,
+                                    (uint8_t)start_value,
                                     (bool)first_call);
     PyBuffer_Release(&data);
 
@@ -89,9 +89,9 @@ py_calculate_crc8_h2f(PyObject *module,
         return NULL;
     }
 
-    uint8_t crc = Crc_CalculateCRC8H2F((uint8_t*)data.buf, 
-                                       (uint32_t)data.len, 
-                                       (uint8_t)start_value, 
+    uint8_t crc = Crc_CalculateCRC8H2F((uint8_t*)data.buf,
+                                       (uint32_t)data.len,
+                                       (uint8_t)start_value,
                                        (bool)first_call);
 
     PyBuffer_Release(&data);
@@ -134,9 +134,9 @@ py_calculate_crc16(PyObject *module,
         return NULL;
     }
 
-    uint16_t crc = Crc_CalculateCRC16((uint8_t*)data.buf, 
-                                      (uint32_t)data.len, 
-                                      (uint16_t)start_value, 
+    uint16_t crc = Crc_CalculateCRC16((uint8_t*)data.buf,
+                                      (uint32_t)data.len,
+                                      (uint16_t)start_value,
                                       (bool)first_call);
 
     PyBuffer_Release(&data);
@@ -179,9 +179,9 @@ py_calculate_crc16_arc(PyObject *module,
         return NULL;
     }
 
-    uint16_t crc = Crc_CalculateCRC16ARC((uint8_t*)data.buf, 
-                                         (uint32_t)data.len, 
-                                         (uint16_t)start_value, 
+    uint16_t crc = Crc_CalculateCRC16ARC((uint8_t*)data.buf,
+                                         (uint32_t)data.len,
+                                         (uint16_t)start_value,
                                          (bool)first_call);
     PyBuffer_Release(&data);
 
@@ -223,9 +223,9 @@ py_calculate_crc32(PyObject *module,
         return NULL;
     }
 
-    uint32_t crc = Crc_CalculateCRC32((uint8_t*)data.buf, 
-                                      (uint32_t)data.len, 
-                                      (uint32_t)start_value, 
+    uint32_t crc = Crc_CalculateCRC32((uint8_t*)data.buf,
+                                      (uint32_t)data.len,
+                                      (uint32_t)start_value,
                                       (bool)first_call);
     PyBuffer_Release(&data);
 
@@ -267,9 +267,9 @@ py_calculate_crc32_p4(PyObject *module,
         return NULL;
     }
 
-    uint32_t crc = Crc_CalculateCRC32P4((uint8_t*)data.buf, 
-                                        (uint32_t)data.len, 
-                                        (uint32_t)start_value, 
+    uint32_t crc = Crc_CalculateCRC32P4((uint8_t*)data.buf,
+                                        (uint32_t)data.len,
+                                        (uint32_t)start_value,
                                         (bool)first_call);
     PyBuffer_Release(&data);
 
@@ -311,9 +311,9 @@ py_calculate_crc64(PyObject *module,
         return NULL;
     }
 
-    uint64_t crc = Crc_CalculateCRC64((uint8_t*)data.buf, 
-                                      (uint32_t)data.len, 
-                                      (uint64_t)start_value, 
+    uint64_t crc = Crc_CalculateCRC64((uint8_t*)data.buf,
+                                      (uint32_t)data.len,
+                                      (uint64_t)start_value,
                                       (bool)first_call);
     PyBuffer_Release(&data);
 
@@ -380,7 +380,7 @@ PyMODINIT_FUNC PyInit_crc(void)
 
     if (module_p == NULL)
         return (NULL);
-    
+
     _AddUnsignedIntMacro(module_p, CRC8_INITIAL_VALUE);
     _AddUnsignedIntMacro(module_p, CRC8_XOR_VALUE);
     _AddUnsignedIntMacro(module_p, CRC8_CHECK);

@@ -19,10 +19,10 @@ The documentation is available [here](https://autosar-e2e.readthedocs.io/en/late
 
 ## Description
 
-This library provides fast C implementations of the E2E CRC algorithms and E2E profiles. 
+This library provides fast C implementations of the E2E CRC algorithms and E2E profiles.
 
 Currently, all relevant CRC algorithms are available in module `e2e.crc`
-but only E2E profiles 1, 2, 4, 5 and 7 are available. 
+but only E2E profiles 1, 2, 4, 5 and 7 are available.
 If you provide example data for the other profiles I would try to implement them, too.
 
 ## Installation

@@ -22,7 +22,7 @@
 #define P04HEADER_LEN  (P04LENGTH_LEN+P04COUNTER_LEN+P04DATAID_LEN+P04CRC_LEN)
 
 uint32_t compute_p04_crc(uint8_t *data_ptr,
-                         uint16_t length, 
+                         uint16_t length,
                          uint16_t offset)
 {
     uint32_t crc;

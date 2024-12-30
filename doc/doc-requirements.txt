@@ -1,2 +1,2 @@
-sphinx>=5.2.3
 furo
+sphinx>=5.2.3

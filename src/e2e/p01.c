@@ -15,11 +15,11 @@
 #define E2E_P01_DATAID_LOW 0x2
 #define E2E_P01_DATAID_NIBBLE 0x3
 
-uint8_t compute_p01_crc(uint8_t *data_ptr, 
-                        uint16_t length, 
-                        uint16_t data_id, 
-                        uint16_t data_id_mode, 
-                        uint8_t counter, 
+uint8_t compute_p01_crc(uint8_t *data_ptr,
+                        uint16_t length,
+                        uint16_t data_id,
+                        uint16_t data_id_mode,
+                        uint8_t counter,
                         uint16_t crc_offset)
 {
     uint8_t data_id_lo_byte = (uint8_t)data_id;
@@ -115,7 +115,7 @@ py_e2e_p01_protect(PyObject *module,
         NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "y*HH|$Hp:e2e_p01_protect",
-                                     kwlist, &data, &length, &data_id, 
+                                     kwlist, &data, &length, &data_id,
                                      &data_id_mode, &increment_counter))
     {
         return NULL;

@@ -12,7 +12,7 @@ def test_e2e_p01_protect_both():
         data_id_mode=e2e.p01.E2E_P01_DATAID_BOTH,
         increment_counter=False,
     )
-    assert data == bytearray(b"\xCC\x00\x00\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\xcc\x00\x00\x00\x00\x00\x00\x00"), data
 
     # increment counter
     e2e.p01.e2e_p01_protect(
@@ -36,7 +36,7 @@ def test_e2e_p01_protect_alt():
         data_id_mode=e2e.p01.E2E_P01_DATAID_ALT,
         increment_counter=False,
     )
-    assert data == bytearray(b"\xCE\x00\x00\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\xce\x00\x00\x00\x00\x00\x00\x00"), data
 
     # increment counter
     e2e.p01.e2e_p01_protect(
@@ -60,7 +60,7 @@ def test_e2e_p01_protect_low():
         data_id_mode=e2e.p01.E2E_P01_DATAID_LOW,
         increment_counter=False,
     )
-    assert data == bytearray(b"\xCE\x00\x00\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\xce\x00\x00\x00\x00\x00\x00\x00"), data
 
     # increment counter
     e2e.p01.e2e_p01_protect(
@@ -84,7 +84,7 @@ def test_e2e_p01_protect_nibble():
         data_id_mode=e2e.p01.E2E_P01_DATAID_NIBBLE,
         increment_counter=False,
     )
-    assert data == bytearray(b"\x2A\x10\x00\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\x2a\x10\x00\x00\x00\x00\x00\x00"), data
 
     # increment counter
     e2e.p01.e2e_p01_protect(
@@ -100,7 +100,7 @@ def test_e2e_p01_protect_nibble():
 def test_e2e_p01_check_both():
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\xCC\x00\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\xcc\x00\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_BOTH,
@@ -110,7 +110,7 @@ def test_e2e_p01_check_both():
 
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\xCC\x10\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\xcc\x10\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_BOTH,
@@ -122,7 +122,7 @@ def test_e2e_p01_check_both():
 def test_e2e_p01_check_alt():
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\xCE\x00\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\xce\x00\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_ALT,
@@ -132,7 +132,7 @@ def test_e2e_p01_check_alt():
 
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\xCE\x10\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\xce\x10\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_ALT,
@@ -144,7 +144,7 @@ def test_e2e_p01_check_alt():
 def test_e2e_p01_check_low():
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\xCE\x00\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\xce\x00\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_LOW,
@@ -166,7 +166,7 @@ def test_e2e_p01_check_low():
 def test_e2e_p01_check_nibble():
     assert (
         e2e.p01.e2e_p01_check(
-            data=bytearray(b"\x2A\x10\x00\x00\x00\x00\x00\x00"),
+            data=bytearray(b"\x2a\x10\x00\x00\x00\x00\x00\x00"),
             data_id=0x123,
             length=7,
             data_id_mode=e2e.p01.E2E_P01_DATAID_NIBBLE,

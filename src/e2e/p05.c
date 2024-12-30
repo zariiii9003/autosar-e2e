@@ -21,9 +21,9 @@
 #define P05CRC_LEN 2
 #define P05HEADER_LEN (P05CRC_LEN+P05COUNTER_LEN)
 
-uint16_t compute_p05_crc(uint8_t *data_ptr, 
-                         uint16_t length, 
-                         uint16_t data_id, 
+uint16_t compute_p05_crc(uint8_t *data_ptr,
+                         uint16_t length,
+                         uint16_t data_id,
                          uint16_t offset)
 {
     // 'length' does not contain CRC

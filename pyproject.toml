@@ -9,7 +9,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 license = { text = "MIT" }
 keywords = [
-  "AUTOSAR", 
+  "AUTOSAR",
   "E2E",
   "automotive",
 ]

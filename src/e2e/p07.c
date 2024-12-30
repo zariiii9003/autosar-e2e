@@ -22,8 +22,8 @@
 
 #define P07HEADER_LEN (P07CRC_LEN+P07LENGTH_LEN+P07COUNTER_LEN+P07DATAID_LEN)
 
-uint64_t compute_p07_crc(uint8_t *data_ptr, 
-                         uint32_t length, 
+uint64_t compute_p07_crc(uint8_t *data_ptr,
+                         uint32_t length,
                          uint32_t offset)
 {
     uint64_t crc;

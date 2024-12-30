@@ -8,10 +8,10 @@ def test_e2e_p05_protect():
     data_id = 0x1234
 
     e2e.p05.e2e_p05_protect(data, length, data_id, increment_counter=False)
-    assert data == bytearray(b"\x1C\xCA\x00\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\x1c\xca\x00\x00\x00\x00\x00\x00"), data
 
     e2e.p05.e2e_p05_protect(data, length, data_id, increment_counter=True)
-    assert data == bytearray(b"\xCF\x8D\x01\x00\x00\x00\x00\x00"), data
+    assert data == bytearray(b"\xcf\x8d\x01\x00\x00\x00\x00\x00"), data
 
     # long example (e.g. SOME/IP)
     data = bytearray(b"\x00" * 16)
@@ -30,14 +30,14 @@ def test_e2e_p05_protect():
         data, length, data_id, offset=offset, increment_counter=True
     )
     assert data == bytearray(
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\xFB\xD6\x01\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\xfb\xd6\x01\x00\x00\x00\x00\x00"
     ), data
 
 
 def test_e2e_p05_check():
     assert (
         e2e.p05.e2e_p05_check(
-            b"\x1C\xCA\x00\x00\x00\x00\x00\x00",
+            b"\x1c\xca\x00\x00\x00\x00\x00\x00",
             6,
             0x1234,
         )
@@ -45,7 +45,7 @@ def test_e2e_p05_check():
     )
     assert (
         e2e.p05.e2e_p05_check(
-            b"\x1C\xCA\x01\x00\x00\x00\x00\x00",
+            b"\x1c\xca\x01\x00\x00\x00\x00\x00",
             6,
             0x1234,
         )
