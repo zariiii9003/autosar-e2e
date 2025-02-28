@@ -4,6 +4,9 @@ on:
   pull_request:
   push:
 
+permissions:
+  contents: read
+
 env:
   PY_COLORS: "1"
 
@@ -17,12 +20,13 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # 4.2.2
         with:
-          fetch-depth: 0  # fetch tags for setuptools-scm
+          fetch-depth: 0
+          persist-credentials: false
 
       # Used to host cibuildwhee
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # 5.3.0
         with:
           python-version: "3.10"
 
@@ -32,7 +36,7 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b  # 4.5.0
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
@@ -41,10 +45,11 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # 4.2.2
         with:
-          fetch-depth: 0  # fetch tags for setuptools-scm
-      - uses: actions/setup-python@v5
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # 5.3.0
         with:
           python-version: "3.10"
 
@@ -54,7 +59,7 @@ jobs:
       - name: Build sdist
         run: python -m build --sdist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b  # 4.5.0
         with:
           name: cibw-sdist
           path: dist/*.tar.gz
@@ -74,16 +79,16 @@ jobs:
     # upload to PyPI on new tag
     if: startsWith(github.ref, 'refs/tags')
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16  # 4.1.8
         with:
           pattern: cibw-*
           path: dist
           merge-multiple: true
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb  # 2.1.0
         with:
           subject-path: 'dist/*'
 
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@67339c736fd9354cd4f8cb0b744f2b82a74b5c70  # 1.12.3

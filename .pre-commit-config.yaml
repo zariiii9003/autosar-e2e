@@ -30,3 +30,10 @@ repos:
   hooks:
   - id: remove-tabs
     exclude: ^(docs)
+
+- repo: https://github.com/woodruffw/zizmor-pre-commit
+  # Zizmor version.
+  rev: v1.4.1
+  hooks:
+  # Run the linter.
+  - id: zizmor
