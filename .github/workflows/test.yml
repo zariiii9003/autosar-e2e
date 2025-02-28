@@ -17,10 +17,10 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           - { python-version: "3.7", os: "macos-latest" }
+          - { python-version: "3.7", os: "ubuntu-latest" }
         include:
-          # Python 3.7 is on macos-13 but not macos-latest (macos-14-arm64)
-          # https://github.com/actions/setup-python/issues/696#issuecomment-1637587760
           - { python-version: "3.7", os: "macos-13" }
+          - { python-version: "3.7", os: "ubuntu-22.04" }
       fail-fast: false
 
     steps:
