@@ -320,47 +320,20 @@ py_calculate_crc64(PyObject *module,
     return (PyLong_FromUnsignedLongLong(crc));
 }
 
+// Method definitions
 static struct PyMethodDef methods[] = {
-    {"calculate_crc8",
-     (PyCFunction)py_calculate_crc8,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc8_doc},
-    {"calculate_crc8_h2f",
-     (PyCFunction)py_calculate_crc8_h2f,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc8_h2f_doc},
-    {"calculate_crc16",
-     (PyCFunction)py_calculate_crc16,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc16_doc},
-    {"calculate_crc16_arc",
-     (PyCFunction)py_calculate_crc16_arc,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc16_arc_doc},
-    {"calculate_crc32",
-     (PyCFunction)py_calculate_crc32,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc32_doc},
-    {"calculate_crc32_p4",
-     (PyCFunction)py_calculate_crc32_p4,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc32_p4_doc},
-    {"calculate_crc64",
-     (PyCFunction)py_calculate_crc64,
-     METH_VARARGS | METH_KEYWORDS,
-     py_calculate_crc64_doc},
-    {NULL} // sentinel
+    {"calculate_crc8",      (PyCFunction)py_calculate_crc8,      METH_VARARGS | METH_KEYWORDS, py_calculate_crc8_doc     },
+    {"calculate_crc8_h2f",  (PyCFunction)py_calculate_crc8_h2f,  METH_VARARGS | METH_KEYWORDS, py_calculate_crc8_h2f_doc },
+    {"calculate_crc16",     (PyCFunction)py_calculate_crc16,     METH_VARARGS | METH_KEYWORDS, py_calculate_crc16_doc    },
+    {"calculate_crc16_arc", (PyCFunction)py_calculate_crc16_arc, METH_VARARGS | METH_KEYWORDS, py_calculate_crc16_arc_doc},
+    {"calculate_crc32",     (PyCFunction)py_calculate_crc32,     METH_VARARGS | METH_KEYWORDS, py_calculate_crc32_doc    },
+    {"calculate_crc32_p4",  (PyCFunction)py_calculate_crc32_p4,  METH_VARARGS | METH_KEYWORDS, py_calculate_crc32_p4_doc },
+    {"calculate_crc64",     (PyCFunction)py_calculate_crc64,     METH_VARARGS | METH_KEYWORDS, py_calculate_crc64_doc    },
+    {NULL}  // sentinel
 };
 
-static PyModuleDef module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "e2e.crc",
-    .m_doc = "",
-    .m_size = -1,
-    .m_methods = methods};
-
 static int
-_AddUnsignedIntConstant(PyObject *module, const char* name, uint64_t value)
+_AddUnsignedIntConstant(PyObject *module, const char *name, uint64_t value)
 {
     PyObject *obj = PyLong_FromUnsignedLongLong(value);
     if (PyModule_AddObject(module, name, obj) < 0) {
@@ -370,51 +343,79 @@ _AddUnsignedIntConstant(PyObject *module, const char* name, uint64_t value)
     return 0;
 }
 
-#define _AddUnsignedIntMacro(m,c) _AddUnsignedIntConstant(m, #c, c)
+#define _AddUnsignedIntMacro(m, c) _AddUnsignedIntConstant(m, #c, c)
 
+// Module execution function
+static int crc_exec(PyObject *module)
+{
+    // Add constants to module
+    _AddUnsignedIntMacro(module, CRC8_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC8_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC8_CHECK);
+    _AddUnsignedIntMacro(module, CRC8_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC8H2F_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC8H2F_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC8H2F_CHECK);
+    _AddUnsignedIntMacro(module, CRC8H2F_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC16_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC16_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC16_CHECK);
+    _AddUnsignedIntMacro(module, CRC16_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC16ARC_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC16ARC_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC16ARC_CHECK);
+    _AddUnsignedIntMacro(module, CRC16ARC_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC32_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC32_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC32_CHECK);
+    _AddUnsignedIntMacro(module, CRC32_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC32P4_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC32P4_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC32P4_CHECK);
+    _AddUnsignedIntMacro(module, CRC32P4_MAGIC_CHECK);
+
+    _AddUnsignedIntMacro(module, CRC64_INITIAL_VALUE);
+    _AddUnsignedIntMacro(module, CRC64_XOR_VALUE);
+    _AddUnsignedIntMacro(module, CRC64_CHECK);
+    _AddUnsignedIntMacro(module, CRC64_MAGIC_CHECK);
+
+    // Register methods
+    if (PyModule_AddFunctions(module, methods) < 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+// Slots array with version check for Py_mod_gil
+static PyModuleDef_Slot crc_slots[] = {
+    {Py_mod_exec, (void *)crc_exec},
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030c0000) || Py_LIMITED_API >= 0x030c0000
+    {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
+#endif
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030d0000) || Py_LIMITED_API >= 0x030d0000
+    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
+    {0, NULL}
+};
+
+// Module definition
+static struct PyModuleDef crc_module = {
+    PyModuleDef_HEAD_INIT,
+    .m_name = "e2e.crc",
+    .m_doc = "",
+    .m_size = 0,
+    .m_methods = NULL,       // Methods added dynamically
+    .m_slots = crc_slots
+};
+
+// Init function
 PyMODINIT_FUNC PyInit_crc(void)
 {
-
-    PyObject *module_p;
-    module_p = PyModule_Create(&module);
-
-    if (module_p == NULL)
-        return (NULL);
-
-    _AddUnsignedIntMacro(module_p, CRC8_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC8_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC8_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC8_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC8H2F_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC8H2F_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC8H2F_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC8H2F_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC16_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC16_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC16_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC16_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC16ARC_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC16ARC_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC16ARC_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC16ARC_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC32_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC32_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC32_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC32_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC32P4_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC32P4_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC32P4_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC32P4_MAGIC_CHECK);
-
-    _AddUnsignedIntMacro(module_p, CRC64_INITIAL_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC64_XOR_VALUE);
-    _AddUnsignedIntMacro(module_p, CRC64_CHECK);
-    _AddUnsignedIntMacro(module_p, CRC64_MAGIC_CHECK);
-
-    return (module_p);
+    return PyModuleDef_Init(&crc_module);
 }

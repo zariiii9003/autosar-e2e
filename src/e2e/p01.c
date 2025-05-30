@@ -292,31 +292,18 @@ error:
     return NULL;
 }
 
+// Method definitions
 static struct PyMethodDef methods[] = {
-    {"e2e_p01_protect",
-     (PyCFunction)py_e2e_p01_protect,
-     METH_VARARGS | METH_KEYWORDS,
-     e2e_p01_protect_doc},
-    {"e2e_p01_check",
-     (PyCFunction)py_e2e_p01_check,
-     METH_VARARGS | METH_KEYWORDS,
-     e2e_p01_check_doc},
+    {"e2e_p01_protect", (PyCFunction)py_e2e_p01_protect, METH_VARARGS | METH_KEYWORDS, e2e_p01_protect_doc},
+    {"e2e_p01_check",   (PyCFunction)py_e2e_p01_check,   METH_VARARGS | METH_KEYWORDS, e2e_p01_check_doc  },
     {NULL} // sentinel
 };
-
-static PyModuleDef module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "e2e.p01",
-    .m_doc = "",
-    .m_size = -1,
-    .m_methods = methods};
 
 static int
 _AddUnsignedIntConstant(PyObject *module, const char *name, uint64_t value)
 {
     PyObject *obj = PyLong_FromUnsignedLongLong(value);
-    if (PyModule_AddObject(module, name, obj) < 0)
-    {
+    if (PyModule_AddObject(module, name, obj) < 0) {
         Py_XDECREF(obj);
         return -1;
     }
@@ -325,19 +312,47 @@ _AddUnsignedIntConstant(PyObject *module, const char *name, uint64_t value)
 
 #define _AddUnsignedIntMacro(m, c) _AddUnsignedIntConstant(m, #c, c)
 
+// Module execution function
+static int p01_exec(PyObject *module)
+{
+    // Add constants
+    _AddUnsignedIntMacro(module, E2E_P01_DATAID_BOTH);
+    _AddUnsignedIntMacro(module, E2E_P01_DATAID_ALT);
+    _AddUnsignedIntMacro(module, E2E_P01_DATAID_LOW);
+    _AddUnsignedIntMacro(module, E2E_P01_DATAID_NIBBLE);
+
+    // Register methods dynamically
+    if (PyModule_AddFunctions(module, methods) < 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+// Slot table with GIL flags
+static PyModuleDef_Slot p01_slots[] = {
+    {Py_mod_exec, (void *)p01_exec},
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030c0000) || Py_LIMITED_API >= 0x030c0000
+    {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
+#endif
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030d0000) || Py_LIMITED_API >= 0x030d0000
+    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
+    {0, NULL}
+};
+
+// Module definition using multi-phase init
+static struct PyModuleDef p01_module = {
+    PyModuleDef_HEAD_INIT,
+    .m_name = "e2e.p01",
+    .m_doc = "",
+    .m_size = 0,
+    .m_methods = NULL,
+    .m_slots = p01_slots
+};
+
+// Init function
 PyMODINIT_FUNC PyInit_p01(void)
 {
-
-    PyObject *module_p;
-    module_p = PyModule_Create(&module);
-
-    if (module_p == NULL)
-        return (NULL);
-
-    _AddUnsignedIntMacro(module_p, E2E_P01_DATAID_BOTH);
-    _AddUnsignedIntMacro(module_p, E2E_P01_DATAID_ALT);
-    _AddUnsignedIntMacro(module_p, E2E_P01_DATAID_LOW);
-    _AddUnsignedIntMacro(module_p, E2E_P01_DATAID_NIBBLE);
-
-    return (module_p);
+    return PyModuleDef_Init(&p01_module);
 }

@@ -213,33 +213,46 @@ error:
     return NULL;
 }
 
+// Method definitions
 static struct PyMethodDef methods[] = {
-    {"e2e_p04_protect",
-     (PyCFunction)py_e2e_p04_protect,
-     METH_VARARGS | METH_KEYWORDS,
-     e2e_p04_protect_doc},
-    {"e2e_p04_check",
-     (PyCFunction)py_e2e_p04_check,
-     METH_VARARGS | METH_KEYWORDS,
-     e2e_p04_check_doc},
+    {"e2e_p04_protect", (PyCFunction)py_e2e_p04_protect, METH_VARARGS | METH_KEYWORDS, e2e_p04_protect_doc},
+    {"e2e_p04_check",   (PyCFunction)py_e2e_p04_check,   METH_VARARGS | METH_KEYWORDS, e2e_p04_check_doc  },
     {NULL} // sentinel
 };
 
-static PyModuleDef module = {
+// Exec function for multi-phase init
+static int p04_exec(PyObject *module)
+{
+    if (PyModule_AddFunctions(module, methods) < 0) {
+        return -1;
+    }
+    return 0;
+}
+
+// Module slots with conditional GIL/multi-interpreter flags
+static PyModuleDef_Slot p04_slots[] = {
+    {Py_mod_exec, (void *)p04_exec},
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030c0000) || Py_LIMITED_API >= 0x030c0000
+    {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
+#endif
+#if (!defined(Py_LIMITED_API) && PY_VERSION_HEX >= 0x030d0000) || Py_LIMITED_API >= 0x030d0000
+    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
+    {0, NULL}
+};
+
+// Module definition using slots
+static struct PyModuleDef p04_module = {
     PyModuleDef_HEAD_INIT,
     .m_name = "e2e.p04",
     .m_doc = "",
-    .m_size = -1,
-    .m_methods = methods};
+    .m_size = 0,                // 0 for no state, change if using module state
+    .m_methods = NULL,          // Set in exec
+    .m_slots = p04_slots
+};
 
+// Init function
 PyMODINIT_FUNC PyInit_p04(void)
 {
-
-    PyObject *module_p;
-    module_p = PyModule_Create(&module);
-
-    if (module_p == NULL)
-        return (NULL);
-
-    return (module_p);
+    return PyModuleDef_Init(&p04_module);
 }
