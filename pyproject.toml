@@ -52,4 +52,5 @@ test-requires = "pytest"
 test-command = "pytest {project}/test"
 build-frontend = "build"
 skip = "pp*"
-free-threaded-support = true
+test-skip = "cp38-macosx_*:arm64"
+enable = ["cpython-freethreading"]
