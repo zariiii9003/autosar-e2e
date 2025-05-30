@@ -52,3 +52,4 @@ test-requires = "pytest"
 test-command = "pytest {project}/test"
 build-frontend = "build"
 skip = "pp*"
+free-threaded-support = true
