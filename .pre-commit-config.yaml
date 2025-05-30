@@ -17,9 +17,9 @@ repos:
 
 # Check linting and style issues
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: "v0.9.9"
+  rev: "v0.11.12"
   hooks:
-    - id: ruff
+    - id: ruff-check
       args: ["--fix", "--show-fixes"]
     - id: ruff-format
       exclude: ^(docs)
@@ -33,7 +33,7 @@ repos:
 
 - repo: https://github.com/woodruffw/zizmor-pre-commit
   # Zizmor version.
-  rev: v1.4.1
+  rev: v1.8.0
   hooks:
   # Run the linter.
   - id: zizmor
