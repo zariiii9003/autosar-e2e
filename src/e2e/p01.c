@@ -70,7 +70,7 @@ uint8_t compute_p01_crc(uint8_t *data_ptr,
 
 // clang-format off
 PyDoc_STRVAR(e2e_p01_protect_doc,
-             "e2e_p01_protect(data: bytearray, length: int, data_id: int, *, data_id_mode: int = 0, increment_counter: bool = True) -> None \n"
+             "e2e_p01_protect(data: bytearray, length: int, data_id: int, *, data_id_mode: int = E2E_P01_DATAID_BOTH, increment_counter: bool = True) -> None \n"
              "Calculate CRC inplace according to AUTOSAR E2E Profile 1. \n"
              "\n"
              ":param bytearray data: \n"
