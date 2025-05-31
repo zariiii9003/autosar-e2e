@@ -2,15 +2,14 @@
 #
 # SPDX-License-Identifier: MIT */
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 // copy uint16_t into buffer in littleendian byte order
 void uint16_to_littleendian(uint8_t *target, uint16_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> (i * 8)) & 0xffu);
     }
 }
@@ -19,8 +18,7 @@ void uint16_to_littleendian(uint8_t *target, uint16_t value)
 void uint32_to_littleendian(uint8_t *target, uint32_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> (i * 8)) & 0xffu);
     }
 }
@@ -29,8 +27,7 @@ void uint32_to_littleendian(uint8_t *target, uint32_t value)
 void uint64_to_littleendian(uint8_t *target, uint64_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> (i * 8)) & 0xffu);
     }
 }
@@ -39,9 +36,8 @@ void uint64_to_littleendian(uint8_t *target, uint64_t value)
 uint16_t littleendian_to_uint16(uint8_t *source)
 {
     uint16_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint16_t)source[i] << (i * 8);
     }
     return value;
@@ -51,9 +47,8 @@ uint16_t littleendian_to_uint16(uint8_t *source)
 uint32_t littleendian_to_uint32(uint8_t *source)
 {
     uint32_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint32_t)source[i] << (i * 8);
     }
     return value;
@@ -63,9 +58,8 @@ uint32_t littleendian_to_uint32(uint8_t *source)
 uint64_t littleendian_to_uint64(uint8_t *source)
 {
     uint64_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint64_t)source[i] << (i * 8);
     }
     return value;
@@ -75,8 +69,7 @@ uint64_t littleendian_to_uint64(uint8_t *source)
 void uint16_to_bigendian(uint8_t *target, uint16_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> ((len - 1 - i) * 8)) & 0xffu);
     }
 }
@@ -85,8 +78,7 @@ void uint16_to_bigendian(uint8_t *target, uint16_t value)
 void uint32_to_bigendian(uint8_t *target, uint32_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> ((len - 1 - i) * 8)) & 0xffu);
     }
 }
@@ -95,8 +87,7 @@ void uint32_to_bigendian(uint8_t *target, uint32_t value)
 void uint64_to_bigendian(uint8_t *target, uint64_t value)
 {
     size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         target[i] = (uint8_t)((value >> ((len - 1 - i) * 8)) & 0xffu);
     }
 }
@@ -105,9 +96,8 @@ void uint64_to_bigendian(uint8_t *target, uint64_t value)
 uint16_t bigendian_to_uint16(uint8_t *source)
 {
     uint16_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint16_t)source[i] << ((len - 1 - i) * 8);
     }
     return value;
@@ -117,9 +107,8 @@ uint16_t bigendian_to_uint16(uint8_t *source)
 uint32_t bigendian_to_uint32(uint8_t *source)
 {
     uint32_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint32_t)source[i] << ((len - 1 - i) * 8);
     }
     return value;
@@ -129,9 +118,8 @@ uint32_t bigendian_to_uint32(uint8_t *source)
 uint64_t bigendian_to_uint64(uint8_t *source)
 {
     uint64_t value = 0;
-    size_t len = sizeof(value);
-    for (size_t i = 0; i < len; ++i)
-    {
+    size_t   len   = sizeof(value);
+    for (size_t i = 0; i < len; ++i) {
         value += (uint64_t)source[i] << ((len - 1 - i) * 8);
     }
     return value;

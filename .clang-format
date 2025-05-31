@@ -1,0 +1,16 @@
+IndentWidth: 4
+IndentCaseLabels: true
+BreakBeforeBraces: Stroustrup
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: AcrossEmptyLinesAndComments
+AlignConsecutiveDeclarations: AcrossEmptyLinesAndComments
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+BinPackArguments: false
+BinPackParameters: false
+ExperimentalAutoDetectBinPacking: false
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortEnumsOnASingleLine: false
+ColumnLimit: 105
+PenaltyReturnTypeOnItsOwnLine: 1000000
+PackConstructorInitializers: Never
