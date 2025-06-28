@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import e2e
 
 
@@ -35,3 +36,13 @@ def test_e2e_p02_check():
         e2e.p02.e2e_p02_check(b"\xbc\x01\x02\x03\x04\x05\x06\x07", length, data_id_list)
         is False
     )
+
+
+def test_multithreaded():
+    tasks = []
+    with ThreadPoolExecutor() as pool:
+        for _ in range(1000):
+            tasks.append(pool.submit(test_e2e_p02_check))
+            tasks.append(pool.submit(test_e2e_p02_protect))
+        for task in tasks:
+            task.result()

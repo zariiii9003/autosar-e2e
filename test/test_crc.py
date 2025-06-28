@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import e2e.crc
 
 
@@ -231,3 +232,18 @@ def test_calculate_crc64():
         first_call = False
     assert 0x701ECEB219A8E5D5 == crc
 # fmt: on
+
+
+def test_multithreaded():
+    tasks = []
+    with ThreadPoolExecutor() as pool:
+        for _ in range(1000):
+            tasks.append(pool.submit(test_calculate_crc8))
+            tasks.append(pool.submit(test_calculate_crc8_h2f))
+            tasks.append(pool.submit(test_calculate_crc16))
+            tasks.append(pool.submit(test_calculate_crc16_arc))
+            tasks.append(pool.submit(test_calculate_crc32))
+            tasks.append(pool.submit(test_calculate_crc32_p4))
+            tasks.append(pool.submit(test_calculate_crc64))
+        for task in tasks:
+            task.result()

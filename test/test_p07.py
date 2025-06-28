@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import e2e
 
 
@@ -94,3 +95,13 @@ def test_e2e_p07_check():
         )
         is False
     )
+
+
+def test_multithreaded():
+    tasks = []
+    with ThreadPoolExecutor() as pool:
+        for _ in range(1000):
+            tasks.append(pool.submit(test_e2e_p07_check))
+            tasks.append(pool.submit(test_e2e_p07_protect))
+        for task in tasks:
+            task.result()

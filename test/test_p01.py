@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import e2e
 
 
@@ -183,3 +184,19 @@ def test_e2e_p01_check_nibble():
         )
         is False
     )
+
+
+def test_multithreaded():
+    tasks = []
+    with ThreadPoolExecutor() as pool:
+        for _ in range(1000):
+            tasks.append(pool.submit(test_e2e_p01_check_both))
+            tasks.append(pool.submit(test_e2e_p01_check_alt))
+            tasks.append(pool.submit(test_e2e_p01_check_low))
+            tasks.append(pool.submit(test_e2e_p01_check_nibble))
+            tasks.append(pool.submit(test_e2e_p01_protect_both))
+            tasks.append(pool.submit(test_e2e_p01_protect_alt))
+            tasks.append(pool.submit(test_e2e_p01_protect_low))
+            tasks.append(pool.submit(test_e2e_p01_protect_nibble))
+        for task in tasks:
+            task.result()
