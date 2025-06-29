@@ -27,6 +27,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
   "Programming Language :: Python :: Free Threading :: 1 - Unstable",
 ]
 dependencies = []
@@ -52,6 +53,4 @@ write_to = "src/e2e/_version.py"
 test-requires = "pytest"
 test-command = "pytest {project}/test"
 build-frontend = "build"
-skip = "pp*"
-test-skip = "cp38-macosx_*:arm64"
-enable = ["cpython-freethreading"]
+enable = ["cpython-freethreading", "pypy"]

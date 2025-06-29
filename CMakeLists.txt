@@ -13,7 +13,7 @@ find_package(Python
 if(NOT "${SKBUILD_SABI_COMPONENT}" STREQUAL "")
     set(PY_ABI_OPTIONS "WITH_SOABI" "USE_SABI" "3.11")
 else()
-    set(PY_ABI_OPTIONS "")
+    set(PY_ABI_OPTIONS "WITH_SOABI")
 endif()
 
 python_add_library(crc
