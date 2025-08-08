@@ -8,14 +8,14 @@
 #include "crclib.h"
 #include "util.h"
 
-#define P06LENGTH_POS    2
-#define P06LENGTH_LEN    2
-#define P06COUNTER_POS   4
-#define P06COUNTER_LEN   1
-#define P06DATAID_POS    0
-#define P06DATAID_LEN    0
-#define P06CRC_POS       0
-#define P06CRC_LEN       2
+#define P06LENGTH_POS    2u
+#define P06LENGTH_LEN    2u
+#define P06COUNTER_POS   4u
+#define P06COUNTER_LEN   1u
+#define P06DATAID_POS    0u
+#define P06DATAID_LEN    0u
+#define P06CRC_POS       0u
+#define P06CRC_LEN       2u
 #define P06CALCULATE_CRC Crc_CalculateCRC16
 
 #define P06HEADER_LEN    (P06CRC_LEN + P06LENGTH_LEN + P06COUNTER_LEN)

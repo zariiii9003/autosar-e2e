@@ -11,16 +11,17 @@
 #include "crclib.h"
 #include "util.h"
 
-#define P07LENGTH_POS  8u
-#define P07LENGTH_LEN  4u
-#define P07COUNTER_POS 12u
-#define P07COUNTER_LEN 4u
-#define P07DATAID_POS  16u
-#define P07DATAID_LEN  4u
-#define P07CRC_POS     0u
-#define P07CRC_LEN     8u
+#define P07LENGTH_POS    8u
+#define P07LENGTH_LEN    4u
+#define P07COUNTER_POS   12u
+#define P07COUNTER_LEN   4u
+#define P07DATAID_POS    16u
+#define P07DATAID_LEN    4u
+#define P07CRC_POS       0u
+#define P07CRC_LEN       8u
+#define P07CALCULATE_CRC Crc_CalculateCRC64
 
-#define P07HEADER_LEN  (P07CRC_LEN + P07LENGTH_LEN + P07COUNTER_LEN + P07DATAID_LEN)
+#define P07HEADER_LEN    (P07CRC_LEN + P07LENGTH_LEN + P07COUNTER_LEN + P07DATAID_LEN)
 
 uint64_t compute_p07_crc(uint8_t *data_ptr, uint32_t length, uint32_t offset)
 {
@@ -28,14 +29,14 @@ uint64_t compute_p07_crc(uint8_t *data_ptr, uint32_t length, uint32_t offset)
 
     // bytes before crc bytes
     uint32_t crc_offset = (uint32_t)(offset + P07CRC_POS);
-    crc                 = Crc_CalculateCRC64(data_ptr, crc_offset, CRC64_INITIAL_VALUE, true);
+    crc                 = P07CALCULATE_CRC(data_ptr, crc_offset, CRC64_INITIAL_VALUE, true);
 
     // bytes after crc bytes, if any
     if (offset + P07CRC_POS + P07CRC_LEN < length) {
         uint32_t second_part_offset = offset + P07CRC_POS + P07CRC_LEN;
         uint8_t *second_part_ptr    = data_ptr + second_part_offset;
         uint32_t second_part_len    = length - (uint32_t)(offset + P07CRC_POS + P07CRC_LEN);
-        crc                         = Crc_CalculateCRC64(second_part_ptr, second_part_len, crc, false);
+        crc                         = P07CALCULATE_CRC(second_part_ptr, second_part_len, crc, false);
     }
     return crc;
 }

@@ -11,31 +11,32 @@
 #include "crclib.h"
 #include "util.h"
 
-#define P05LENGTH_POS  0
-#define P05LENGTH_LEN  0
-#define P05COUNTER_POS 2
-#define P05COUNTER_LEN 1
-#define P05DATAID_POS  0
-#define P05DATAID_LEN  0
-#define P05CRC_POS     0
-#define P05CRC_LEN     2
-#define P05HEADER_LEN  (P05CRC_LEN + P05COUNTER_LEN)
+#define P05LENGTH_POS    0u
+#define P05LENGTH_LEN    0u
+#define P05COUNTER_POS   2u
+#define P05COUNTER_LEN   1u
+#define P05DATAID_POS    0u
+#define P05DATAID_LEN    0u
+#define P05CRC_POS       0u
+#define P05CRC_LEN       2u
+#define P05CALCULATE_CRC Crc_CalculateCRC16
+
+#define P05HEADER_LEN    (P05CRC_LEN + P05COUNTER_LEN)
 
 uint16_t compute_p05_crc(uint8_t *data_ptr, uint16_t length, uint16_t data_id, uint16_t offset)
 {
-    // 'length' does not contain CRC
     uint16_t crc;
     uint8_t  data_id_lo_byte = (uint8_t)data_id;
     uint8_t  data_id_hi_byte = (uint8_t)(data_id >> 8);
     if (offset > 0) {
-        crc = Crc_CalculateCRC16(data_ptr, offset, CRC16_INITIAL_VALUE, true);
-        crc = Crc_CalculateCRC16(&data_ptr[offset + P05COUNTER_POS], length - offset, crc, false);
+        crc = P05CALCULATE_CRC(data_ptr, offset, CRC16_INITIAL_VALUE, true);
+        crc = P05CALCULATE_CRC(&data_ptr[offset + P05COUNTER_POS], length - offset, crc, false);
     }
     else {
-        crc = Crc_CalculateCRC16(&data_ptr[P05COUNTER_POS], length, CRC16_INITIAL_VALUE, true);
+        crc = P05CALCULATE_CRC(&data_ptr[P05COUNTER_POS], length, CRC16_INITIAL_VALUE, true);
     }
-    crc = Crc_CalculateCRC16(&data_id_lo_byte, 1, crc, false);
-    crc = Crc_CalculateCRC16(&data_id_hi_byte, 1, crc, false);
+    crc = P05CALCULATE_CRC(&data_id_lo_byte, 1, crc, false);
+    crc = P05CALCULATE_CRC(&data_id_hi_byte, 1, crc, false);
 
     return crc;
 }
