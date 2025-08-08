@@ -11,15 +11,17 @@
 #include "crclib.h"
 #include "util.h"
 
-#define P04LENGTH_POS  0
-#define P04LENGTH_LEN  2
-#define P04COUNTER_POS 2
-#define P04COUNTER_LEN 2
-#define P04DATAID_POS  4
-#define P04DATAID_LEN  4
-#define P04CRC_POS     8
-#define P04CRC_LEN     4
-#define P04HEADER_LEN  (P04LENGTH_LEN + P04COUNTER_LEN + P04DATAID_LEN + P04CRC_LEN)
+#define P04LENGTH_POS    0u
+#define P04LENGTH_LEN    2u
+#define P04COUNTER_POS   2u
+#define P04COUNTER_LEN   2u
+#define P04DATAID_POS    4u
+#define P04DATAID_LEN    4u
+#define P04CRC_POS       8u
+#define P04CRC_LEN       4u
+#define P04CALCULATE_CRC Crc_CalculateCRC32P4
+
+#define P04HEADER_LEN    (P04LENGTH_LEN + P04COUNTER_LEN + P04DATAID_LEN + P04CRC_LEN)
 
 uint32_t compute_p04_crc(uint8_t *data_ptr, uint16_t length, uint16_t offset)
 {
@@ -27,13 +29,13 @@ uint32_t compute_p04_crc(uint8_t *data_ptr, uint16_t length, uint16_t offset)
 
     // bytes before crc bytes
     uint32_t crc_offset = (uint32_t)(offset + P04CRC_POS);
-    crc                 = Crc_CalculateCRC32P4(data_ptr, crc_offset, CRC32P4_INITIAL_VALUE, true);
+    crc                 = P04CALCULATE_CRC(data_ptr, crc_offset, CRC32P4_INITIAL_VALUE, true);
 
     // bytes after crc bytes, if any
     if (offset + P04HEADER_LEN < length) {
         uint8_t *second_part_ptr    = data_ptr + offset + P04HEADER_LEN;
         uint32_t second_part_length = length - offset - P04HEADER_LEN;
-        crc = Crc_CalculateCRC32P4(second_part_ptr, second_part_length, crc, false);
+        crc                         = P04CALCULATE_CRC(second_part_ptr, second_part_length, crc, false);
     }
     return crc;
 }
