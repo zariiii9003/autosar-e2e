@@ -44,6 +44,12 @@ Profile 05
 .. autofunction:: e2e.p05.e2e_p05_protect
 .. autofunction:: e2e.p05.e2e_p05_check
 
+Profile 06
+""""""""""
+
+.. autofunction:: e2e.p06.e2e_p06_protect
+.. autofunction:: e2e.p06.e2e_p06_check
+
 Profile 07
 """"""""""
 
