@@ -45,6 +45,11 @@ python_add_library(p07
                    ${CMAKE_SOURCE_DIR}/src/e2e/p07.c
                    ${PY_ABI_OPTIONS})
 
+python_add_library(p11
+                   MODULE
+                   ${CMAKE_SOURCE_DIR}/src/e2e/p11.c
+                   ${PY_ABI_OPTIONS})
+
 # Add libraries
 add_library(crclib STATIC ${CMAKE_SOURCE_DIR}/src/e2e/crclib.c)
 add_library(util STATIC ${CMAKE_SOURCE_DIR}/src/e2e/util.c)
@@ -57,5 +62,6 @@ target_link_libraries(p04 PRIVATE crclib util)
 target_link_libraries(p05 PRIVATE crclib util)
 target_link_libraries(p06 PRIVATE crclib util)
 target_link_libraries(p07 PRIVATE crclib util)
+target_link_libraries(p11 PRIVATE crclib)
 
-install(TARGETS crc p01 p02 p04 p05 p06 p07 LIBRARY DESTINATION e2e)
+install(TARGETS crc p01 p02 p04 p05 p06 p07 p11 LIBRARY DESTINATION e2e)

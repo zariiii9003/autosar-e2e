@@ -56,6 +56,21 @@ Profile 07
 .. autofunction:: e2e.p07.e2e_p07_protect
 .. autofunction:: e2e.p07.e2e_p07_check
 
+Profile 11
+""""""""""
+
+.. autofunction:: e2e.p11.e2e_p11_protect
+.. autofunction:: e2e.p11.e2e_p11_check
+
+.. data:: e2e.p11.E2E_P11_DATAID_BOTH
+   :type: typing.Final[int]
+   :value: 0x00
+
+.. data:: e2e.p11.E2E_P11_DATAID_NIBBLE
+   :type: typing.Final[int]
+   :value: 0x03
+
+
 CRC Functions
 ^^^^^^^^^^^^^
 
