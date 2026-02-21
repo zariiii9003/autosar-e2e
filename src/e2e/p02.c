@@ -12,37 +12,37 @@
 
 // clang-format off
 PyDoc_STRVAR(e2e_p02_protect_doc,
-             "e2e_p02_protect(data: bytearray, length: int, data_id_list: bytes, *, increment_counter: bool = True) -> None \n"
+             "e2e_p02_protect(data: bytearray, data_id_list: bytes, *, length: int = 0, increment_counter: bool = True) -> None \n"
              "Calculate CRC inplace according to AUTOSAR E2E Profile 2. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    starting with the CRC byte. This CRC byte will be updated inplace. \n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``1 <= length <= len(data) - 1`` \n"
              ":param bytes data_id_list: \n"
              "    A `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    of length 16 which is used to protect against masquerading. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``2 <= length <= len(data)`` must hold."
              ":param bool increment_counter: \n"
              "    If `True` the counter in byte 1 will be incremented before calculating the CRC. \n");
 // clang-format on
 static PyObject *py_e2e_p02_protect(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer     data;
-    unsigned long length;
     Py_buffer     data_id_list;
+    unsigned long length    = 0u;
     int           increment = true;
 
-    static char  *kwlist[]  = {"data", "length", "data_id_list", "increment_counter", NULL};
+    static char  *kwlist[]  = {"data", "data_id_list", "length", "increment_counter", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*ky*|$p:e2e_p02_protect",
+                                     "y*y*|$kp:e2e_p02_protect",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id_list,
+                                     &length,
                                      &increment)) {
         return NULL;
     }
@@ -56,10 +56,13 @@ static PyObject *py_e2e_p02_protect(PyObject *module, PyObject *args, PyObject *
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
         goto error;
     }
-    if (length < 1 || length > data.len - 1) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < 2 || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
-                        "condition: 1 <= length <= len(data) - 1.");
+                        "condition: 2 <= length <= len(data).");
         goto error;
     }
     if (data_id_list.len != 16) {
@@ -79,7 +82,8 @@ static PyObject *py_e2e_p02_protect(PyObject *module, PyObject *args, PyObject *
     }
 
     // calculate CRC
-    uint8_t crc = Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)length, CRC8H2F_INITIAL_VALUE, true);
+    uint8_t crc =
+        Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)(length - 1), CRC8H2F_INITIAL_VALUE, true);
     crc         = Crc_CalculateCRC8H2F(data_id_ptr + counter, 1u, crc, false);
     data_ptr[0] = crc;
 
@@ -96,36 +100,36 @@ error:
 
 // clang-format off
 PyDoc_STRVAR(e2e_p02_check_doc,
-             "e2e_p02_check(data: bytes, length: int, data_id_list: bytes) -> bool \n"
+             "e2e_p02_check(data: bytes, data_id_list: bytes, *, length: int) -> bool \n"
              "Return ``True`` if CRC is correct according to AUTOSAR E2E Profile 2. \n"
              "\n"
              ":param data: \n"
              "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    starting with the CRC byte. \n"
-             ":param length: \n"
-             "    Data byte count over which the CRC must be calculated. `length` must fulfill \n"
-             "    the following condition: ``1 <= length <= len(data) - 1`` \n"
              ":param data_id_list: \n"
              "    A `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    of length 16 which is used to protect against masquerading. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``2 <= length <= len(data)`` must hold."
              ":return:\n"
              "    `True` if CRC is valid, otherwise return `False`");
 // clang-format on
 static PyObject *py_e2e_p02_check(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer     data;
-    unsigned long length;
     Py_buffer     data_id_list;
+    unsigned long length   = 0u;
 
-    static char  *kwlist[] = {"data", "length", "data_id_list", NULL};
+    static char  *kwlist[] = {"data", "data_id_list", "length", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*ky*:py_e2e_p02_protect",
+                                     "y*y*|$k:py_e2e_p02_protect",
                                      kwlist,
                                      &data,
-                                     &length,
-                                     &data_id_list)) {
+                                     &data_id_list,
+                                     &length)) {
         return NULL;
     }
 
@@ -133,10 +137,13 @@ static PyObject *py_e2e_p02_check(PyObject *module, PyObject *args, PyObject *kw
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
-    if (length < 1 || length > data.len - 1) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < 2 || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
-                        "condition: 1 <= length < len(data).");
+                        "condition: 2<= length <= len(data).");
         goto error;
     }
     if (data_id_list.len != 16) {
@@ -152,8 +159,9 @@ static PyObject *py_e2e_p02_check(PyObject *module, PyObject *args, PyObject *kw
     uint8_t  counter     = data_ptr[1] & 0x0Fu;
 
     // calculate CRC
-    uint8_t  crc = Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)length, CRC8H2F_INITIAL_VALUE, true);
-    crc          = Crc_CalculateCRC8H2F(data_id_ptr + counter, 1u, crc, false);
+    uint8_t  crc =
+        Crc_CalculateCRC8H2F(data_ptr + 1, (uint32_t)(length - 1), CRC8H2F_INITIAL_VALUE, true);
+    crc = Crc_CalculateCRC8H2F(data_id_ptr + counter, 1u, crc, false);
 
     PyBuffer_Release(&data);
     PyBuffer_Release(&data_id_list);
