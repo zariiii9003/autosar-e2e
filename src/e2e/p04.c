@@ -25,11 +25,9 @@
 
 uint32_t compute_p04_crc(uint8_t *data_ptr, uint16_t length, uint16_t offset)
 {
-    uint32_t crc;
-
     // bytes before crc bytes
     uint32_t crc_offset = (uint32_t)(offset + P04CRC_POS);
-    crc                 = P04CALCULATE_CRC(data_ptr, crc_offset, CRC32P4_INITIAL_VALUE, true);
+    uint32_t crc        = P04CALCULATE_CRC(data_ptr, crc_offset, CRC32P4_INITIAL_VALUE, true);
 
     // bytes after crc bytes, if any
     if (offset + P04HEADER_LEN < length) {
@@ -42,16 +40,16 @@ uint32_t compute_p04_crc(uint8_t *data_ptr, uint16_t length, uint16_t offset)
 
 // clang-format off
 PyDoc_STRVAR(e2e_p04_protect_doc,
-             "e2e_p04_protect(data: bytearray, length: int, data_id: int, *, offset: int = 0, increment_counter: bool = True) -> None \n"
+             "e2e_p04_protect(data: bytearray, data_id: int, *, length: int = 0, offset: int = 0, increment_counter: bool = True) -> None \n"
              "Calculate CRC inplace according to AUTOSAR E2E Profile 4. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.\n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``12 <= length <= len(data)`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 32bit unsigned integer. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``12 <= length <= len(data)`` must hold."
              ":param int offset: \n"
              "    Byte offset of the E2E header. \n"
              ":param bool increment_counter: \n"
@@ -60,20 +58,20 @@ PyDoc_STRVAR(e2e_p04_protect_doc,
 static PyObject *py_e2e_p04_protect(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer      data;
-    unsigned short length;
     unsigned long  data_id;
-    unsigned short offset    = 0;
+    unsigned short length    = 0u;
+    unsigned short offset    = 0u;
     int            increment = true;
 
-    static char   *kwlist[]  = {"data", "length", "data_id", "offset", "increment_counter", NULL};
+    static char   *kwlist[]  = {"data", "data_id", "length", "offset", "increment_counter", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*Hk|$Hp:e2e_p04_protect",
+                                     "y*k|$HHp:e2e_p04_protect",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
+                                     &length,
                                      &offset,
                                      &increment)) {
         return NULL;
@@ -90,7 +88,10 @@ static PyObject *py_e2e_p04_protect(PyObject *module, PyObject *args, PyObject *
                         "or equal to 12.");
         goto error;
     }
-    if (length < P04HEADER_LEN || length > data.len) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < P04HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 12 <= length <= len(data).");
@@ -131,17 +132,17 @@ error:
 
 // clang-format off
 PyDoc_STRVAR(e2e_p04_check_doc,
-             "e2e_p04_check(data: bytearray, length: int, data_id: int, *, offset: int = 0) -> bool \n"
+             "e2e_p04_check(data: bytearray, data_id: int, *, length: int = 0, offset: int = 0) -> bool \n"
              "Return ``True`` if CRC is correct according to AUTOSAR E2E Profile 4. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    starting with the CRC byte. \n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``12 <= length <= len(data)`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``12 <= length <= len(data)`` must hold."
              ":param int offset: \n"
              "    Byte offset of the E2E header. \n"
              ":return: \n"
@@ -151,19 +152,19 @@ PyDoc_STRVAR(e2e_p04_check_doc,
 static PyObject *py_e2e_p04_check(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer      data;
-    unsigned short length;
     unsigned long  data_id;
-    unsigned short offset   = 0;
+    unsigned short length   = 0u;
+    unsigned short offset   = 0u;
 
-    static char   *kwlist[] = {"data", "length", "data_id", "offset", NULL};
+    static char   *kwlist[] = {"data", "data_id", "length", "offset", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*Hk|$H:e2e_p04_check",
+                                     "y*k|$HH:e2e_p04_check",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
+                                     &length,
                                      &offset)) {
         return NULL;
     }
@@ -172,7 +173,10 @@ static PyObject *py_e2e_p04_check(PyObject *module, PyObject *args, PyObject *kw
                         "The length of bytearray \"data\" must be greater or equal to 12.");
         goto error;
     }
-    if (length < P04HEADER_LEN || length > data.len) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < P04HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 12 <= length <= len(data).");
