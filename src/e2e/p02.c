@@ -77,7 +77,7 @@ static PyObject *py_e2e_p02_protect(PyObject *module, PyObject *args, PyObject *
     // increment counter
     uint8_t  counter     = data_ptr[1] & 0x0Fu;
     if (increment) {
-        counter     = (counter + 1) % 16u;
+        counter     = (counter + 1) % 0xF0u; // 0-15
         data_ptr[1] = (data_ptr[1] & 0xF0u) | counter;
     }
 

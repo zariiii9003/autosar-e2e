@@ -142,8 +142,7 @@ static PyObject *py_e2e_p01_protect(PyObject *module, PyObject *args, PyObject *
     uint8_t       *data_ptr              = (uint8_t *)data.buf;
 
     // Write the counter
-    uint8_t        counter               = 0u;
-    counter                              = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
+    uint8_t        counter               = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
     if (increment_counter) {
         counter                             = (counter + 1) % 0x0F; // alive counter in range 0-14
         *(data_ptr + (counter_offset >> 3)) = (*(data_ptr + (counter_offset >> 3)) & 0xF0) | counter;
