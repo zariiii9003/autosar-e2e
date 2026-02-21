@@ -68,10 +68,15 @@ def test_e2e_p11_protect_nibble():
     ), data.hex(sep=" ")
 
     e2e.p11.e2e_p11_protect(
-        data, data_id, offset=offset, length=length, increment_counter=True
+        data,
+        data_id,
+        data_id_mode=data_id_mode,
+        offset=offset,
+        length=length,
+        increment_counter=True,
     )
     assert data == bytearray(
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\xa5\x11\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x20\x11\x00\x00\x00\x00\x00\x00"
     ), data.hex(sep=" ")
 
 

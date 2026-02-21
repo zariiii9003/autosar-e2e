@@ -60,7 +60,7 @@ uint8_t compute_p01_crc(uint8_t *data_ptr,
     if ((crc_offset >> 3) < length) {
         // compute crc over area after crc byte
         unsigned short start_byte = (crc_offset >> 3) + 1;
-        unsigned short byte_count = length - (crc_offset >> 3);
+        unsigned short byte_count = length - start_byte;
         crc                       = Crc_CalculateCRC8(data_ptr + start_byte, byte_count, crc, false);
     }
 
@@ -70,45 +70,47 @@ uint8_t compute_p01_crc(uint8_t *data_ptr,
 
 // clang-format off
 PyDoc_STRVAR(e2e_p01_protect_doc,
-             "e2e_p01_protect(data: bytearray, length: int, data_id: int, *, data_id_mode: int = E2E_P01_DATAID_BOTH, increment_counter: bool = True) -> None \n"
+             "e2e_p01_protect(data: bytearray, data_id: int, *, data_id_mode: int = E2E_P01_DATAID_BOTH, length: int = 0, offset: int = 0, increment_counter: bool = True) -> None \n"
              "Calculate CRC inplace according to AUTOSAR E2E Profile 1. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    starting with the CRC byte. This CRC byte will be updated inplace. \n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``1 <= length <= len(data) - 1`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
              ":param int data_id_mode: \n"
              "    This attribute describes the inclusion mode that is used to include the `data_id`. The possible inclusion modes are\n"
              "    :attr:`~e2e.p01.E2E_P01_DATAID_BOTH`, :attr:`~e2e.p01.E2E_P01_DATAID_ALT`, :attr:`~e2e.p01.E2E_P01_DATAID_LOW` \n"
              "    and :attr:`~e2e.p01.E2E_P01_DATAID_NIBBLE`.\n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``2 <= length <= len(data)`` must hold."
+             ":param int offset: \n"
+             "    Byte offset of the E2E header. \n"
              ":param bool increment_counter: \n"
              "    If `True` the counter in byte 1 will be incremented before calculating the CRC. \n");
 // clang-format on
 static PyObject *py_e2e_p01_protect(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer      data;
-    unsigned short length;
     unsigned short data_id;
-    unsigned short data_id_mode          = E2E_P01_DATAID_BOTH;
-    int            increment_counter     = true;
-    unsigned short crc_offset            = 0;
-    unsigned short counter_offset        = 8;
-    unsigned short data_id_nibble_offset = 12;
+    unsigned short data_id_mode      = E2E_P01_DATAID_BOTH;
+    unsigned short length            = 0u;
+    unsigned short offset            = 0u;
+    int            increment_counter = true;
 
-    static char   *kwlist[] = {"data", "length", "data_id", "data_id_mode", "increment_counter", NULL};
+    static char   *kwlist[] =
+        {"data", "data_id", "data_id_mode", "length", "offset", "increment_counter", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*HH|$Hp:e2e_p01_protect",
+                                     "y*H|$HHHp:e2e_p01_protect",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
                                      &data_id_mode,
+                                     &length,
+                                     &offset,
                                      &increment_counter)) {
         return NULL;
     }
@@ -119,35 +121,32 @@ static PyObject *py_e2e_p01_protect(PyObject *module, PyObject *args, PyObject *
                         "object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len <= 2) {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
+    if (data.len < 2) {
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
-    if (length < 1 || length > data.len - 1) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < 2 || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
-                        "condition: 1 <= length <= len(data) - 1.");
+                        "condition: 2 <= length <= len(data).");
         goto error;
     }
 
-    uint8_t *data_ptr = (uint8_t *)data.buf;
+    unsigned short crc_offset            = (offset * 8u) + 0u;
+    unsigned short counter_offset        = (offset * 8u) + 8u;
+    unsigned short data_id_nibble_offset = (offset * 8u) + 12u;
 
-    // The counter goes either into low nibble or high nibble of data
-    uint8_t  counter  = 0;
-    if (counter_offset % 8 == 0) {
-        counter = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
-        if (increment_counter) {
-            counter                             = (counter + 1) % 0x0F; // alive counter in range 0-14
-            *(data_ptr + (counter_offset >> 3)) = (*(data_ptr + (counter_offset >> 3)) & 0xF0) | counter;
-        }
-    }
-    else {
-        counter = (*(data_ptr + (counter_offset >> 3)) & 0xF0) >> 4;
-        if (increment_counter) {
-            counter = (counter + 1) % 0x0F; // alive counter in range 0-14
-            *(data_ptr + (counter_offset >> 3)) =
-                (*(data_ptr + (counter_offset >> 3)) & 0x0F) | ((counter << 4) & 0xF0);
-        }
+    uint8_t       *data_ptr              = (uint8_t *)data.buf;
+
+    // Write the counter
+    uint8_t        counter               = 0u;
+    counter                              = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
+    if (increment_counter) {
+        counter                             = (counter + 1) % 0x0F; // alive counter in range 0-14
+        *(data_ptr + (counter_offset >> 3)) = (*(data_ptr + (counter_offset >> 3)) & 0xF0) | counter;
     }
 
     if (data_id_mode == E2E_P01_DATAID_NIBBLE) {
@@ -178,21 +177,23 @@ error:
 
 // clang-format off
 PyDoc_STRVAR(e2e_p01_check_doc,
-             "e2e_p01_check(data: bytearray, length: int, data_id: int, *, data_id_mode: int = E2E_P01_DATAID_BOTH) -> bool \n"
+             "e2e_p01_check(data: bytearray, data_id: int, *, data_id_mode: int = E2E_P01_DATAID_BOTH, length: int = 0, offset: int = 0) -> bool \n"
              "Return ``True`` if CRC is correct according to AUTOSAR E2E Profile 1. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_\n"
              "    starting with the CRC byte. This CRC byte will be updated inplace. \n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``1 <= length < len(data)`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
              ":param int data_id_mode: \n"
              "    Mode of the data ID. Possible values are \n"
              "    :attr:`~e2e.p01.E2E_P01_DATAID_BOTH`, :attr:`~e2e.p01.E2E_P01_DATAID_ALT`, :attr:`~e2e.p01.E2E_P01_DATAID_LOW` \n"
              "    and :attr:`~e2e.p01.E2E_P01_DATAID_NIBBLE`.\n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``2 <= length <= len(data)`` must hold."
+             ":param int offset: \n"
+             "    Byte offset of the E2E header. \n"
              ":return:\n"
              "    `True` if CRC is valid, otherwise return `False`");
 // clang-format on
@@ -200,23 +201,22 @@ PyDoc_STRVAR(e2e_p01_check_doc,
 static PyObject *py_e2e_p01_check(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer      data;
-    unsigned short length;
     unsigned short data_id;
-    unsigned short data_id_mode          = E2E_P01_DATAID_BOTH;
-    unsigned short crc_offset            = 0;
-    unsigned short counter_offset        = 8;
-    unsigned short data_id_nibble_offset = 12;
+    unsigned short data_id_mode = E2E_P01_DATAID_BOTH;
+    unsigned short length       = 0u;
+    unsigned short offset       = 0u;
 
-    static char   *kwlist[]              = {"data", "length", "data_id", "data_id_mode", NULL};
+    static char   *kwlist[]     = {"data", "data_id", "data_id_mode", "length", "offset", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*HH|$H:e2e_p01_check",
+                                     "y*H|$HHH:e2e_p01_check",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
-                                     &data_id_mode)) {
+                                     &data_id_mode,
+                                     &length,
+                                     &offset)) {
         return NULL;
     }
 
@@ -230,24 +230,24 @@ static PyObject *py_e2e_p01_check(PyObject *module, PyObject *args, PyObject *kw
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
-    if (length < 1 || length > data.len - 1) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < 2 || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
-                        "condition: 1 <= length < len(data).");
+                        "condition: 2 <= length <= len(data).");
         goto error;
     }
 
-    uint8_t *data_ptr = (uint8_t *)data.buf;
+    unsigned short crc_offset            = (offset * 8) + 0u;
+    unsigned short counter_offset        = (offset * 8) + 8u;
+    unsigned short data_id_nibble_offset = (offset * 8) + 12u;
 
-    // Check the alive counter value. The counter is located either in the low
-    // or the high nibble of data
-    uint8_t  counter  = 0u;
-    if (counter_offset % 8u == 0u) {
-        counter = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
-    }
-    else {
-        counter = (*(data_ptr + (counter_offset >> 3)) & 0xF0) >> 4;
-    }
+    uint8_t       *data_ptr              = (uint8_t *)data.buf;
+
+    // Check the alive counter value
+    uint8_t        counter               = (*(data_ptr + (counter_offset >> 3)) & 0x0F);
     if (counter > 14u) {
         // counter must be in 0-14
         goto return_false;
@@ -261,7 +261,7 @@ static PyObject *py_e2e_p01_check(PyObject *module, PyObject *args, PyObject *kw
     }
 
     // check CRC
-    uint8_t crc_in_data = *(data_ptr + (crc_offset / 8));
+    uint8_t crc_in_data = *(data_ptr + (crc_offset >> 3));
     uint8_t calculated_crc =
         compute_p01_crc(data_ptr, length, data_id, data_id_mode, counter, crc_offset);
     if (crc_in_data != calculated_crc)
