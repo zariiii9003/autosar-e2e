@@ -103,7 +103,7 @@ static PyObject *py_e2e_p06_protect(PyObject *module, PyObject *args, PyObject *
                         "condition: 5 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - P06HEADER_LEN) {
+    if (offset > length - P06HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }
@@ -183,7 +183,7 @@ static PyObject *py_e2e_p06_check(PyObject *module, PyObject *args, PyObject *kw
                         "condition: 5 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - P06HEADER_LEN) {
+    if (offset > length - P06HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }

@@ -10,6 +10,8 @@
 
 #include "crclib.h"
 
+#define P02HEADER_LEN 2u
+
 // clang-format off
 PyDoc_STRVAR(e2e_p02_protect_doc,
              "e2e_p02_protect(data: bytearray, data_id_list: bytes, *, length: int = 0, increment_counter: bool = True) -> None \n"
@@ -52,14 +54,14 @@ static PyObject *py_e2e_p02_protect(PyObject *module, PyObject *args, PyObject *
                         "object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len <= 2) {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
+    if (data.len < P02HEADER_LEN) {
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
     if (length == 0u) {
         length = data.len;
     }
-    else if (length < 2 || length > data.len) {
+    else if (length < P02HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 2 <= length <= len(data).");
@@ -133,17 +135,17 @@ static PyObject *py_e2e_p02_check(PyObject *module, PyObject *args, PyObject *kw
         return NULL;
     }
 
-    if (data.len < 2) {
+    if (data.len < P02HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
     if (length == 0u) {
         length = data.len;
     }
-    else if (length < 2 || length > data.len) {
+    else if (length < P02HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
-                        "condition: 2<= length <= len(data).");
+                        "condition: 2 <= length <= len(data).");
         goto error;
     }
     if (data_id_list.len != 16) {

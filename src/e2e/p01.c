@@ -15,6 +15,8 @@
 #define E2E_P01_DATAID_LOW    0x2
 #define E2E_P01_DATAID_NIBBLE 0x3
 
+#define P01HEADER_LEN         2u
+
 uint8_t compute_p01_crc(uint8_t *data_ptr,
                         uint16_t length,
                         uint16_t data_id,
@@ -121,17 +123,21 @@ static PyObject *py_e2e_p01_protect(PyObject *module, PyObject *args, PyObject *
                         "object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len < 2) {
+    if (data.len < P01HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
     if (length == 0u) {
         length = data.len;
     }
-    else if (length < 2 || length > data.len) {
+    else if (length < P01HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 2 <= length <= len(data).");
+        goto error;
+    }
+    if (offset > length - P01HEADER_LEN) {
+        PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }
 
@@ -225,17 +231,21 @@ static PyObject *py_e2e_p01_check(PyObject *module, PyObject *args, PyObject *kw
                         "object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len < 2) {
+    if (data.len < P01HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 1.");
         goto error;
     }
     if (length == 0u) {
         length = data.len;
     }
-    else if (length < 2 || length > data.len) {
+    else if (length < P01HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 2 <= length <= len(data).");
+        goto error;
+    }
+    if (offset > length - P01HEADER_LEN) {
+        PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }
 

@@ -54,7 +54,6 @@ PyDoc_STRVAR(e2e_p05_protect_doc,
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.\n"
-             "    the following condition: ``1 <= length <= len(data) - 2`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
              ":param int length: \n"
@@ -92,8 +91,8 @@ static PyObject *py_e2e_p05_protect(PyObject *module, PyObject *args, PyObject *
                         "object that implements the buffer protocol.");
         goto error;
     }
-    if (data.len <= P05HEADER_LEN) {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 3.");
+    if (data.len < P05HEADER_LEN) {
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
         goto error;
     }
     if (length == 0u) {
@@ -105,7 +104,7 @@ static PyObject *py_e2e_p05_protect(PyObject *module, PyObject *args, PyObject *
                         "condition: 3 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - P05HEADER_LEN) {
+    if (offset > length - P05HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }
@@ -166,8 +165,8 @@ static PyObject *py_e2e_p05_check(PyObject *module, PyObject *args, PyObject *kw
         return NULL;
     }
 
-    if (data.len <= P05HEADER_LEN) {
-        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 3.");
+    if (data.len < P05HEADER_LEN) {
+        PyErr_SetString(PyExc_ValueError, "The length of bytearray \"data\" must be greater than 2.");
         goto error;
     }
     if (length == 0u) {
@@ -179,7 +178,7 @@ static PyObject *py_e2e_p05_check(PyObject *module, PyObject *args, PyObject *kw
                         "condition: 3 <= length <= len(data).");
         goto error;
     }
-    if (offset > data.len - P05HEADER_LEN) {
+    if (offset > length - P05HEADER_LEN) {
         PyErr_SetString(PyExc_ValueError, "Argument \"offset\" invalid.");
         goto error;
     }
