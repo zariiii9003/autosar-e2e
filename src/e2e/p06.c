@@ -46,16 +46,16 @@ uint16_t compute_p06_crc(uint8_t *data_ptr, uint16_t length, uint16_t data_id, u
 
 // clang-format off
 PyDoc_STRVAR(e2e_p06_protect_doc,
-             "e2e_p06_protect(data: bytearray, length: int, data_id: int, *, offset: int = 0, increment_counter: bool = True) -> None \n"
+             "e2e_p06_protect(data: bytearray, data_id: int, *, length: int = 0, offset: int = 0, increment_counter: bool = True) -> None \n"
              "Calculate CRC inplace according to AUTOSAR E2E Profile 6. \n"
              "\n"
              ":param bytearray data: \n"
              "    Mutable `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.\n"
-             ":param int length: \n"
-             "    Number of data bytes which are considered for CRC calculation. `length` must fulfill \n"
-             "    the following condition: ``5 <= length <= len(data)`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``5 <= length <= len(data)`` must hold."
              ":param int offset: \n"
              "    Byte offset of the E2E header. \n"
              ":param bool increment_counter: \n"
@@ -64,20 +64,20 @@ PyDoc_STRVAR(e2e_p06_protect_doc,
 static PyObject *py_e2e_p06_protect(PyObject *module, PyObject *args, PyObject *kwargs)
 {
     Py_buffer      data;
-    unsigned short length;
     unsigned short data_id;
-    unsigned short offset    = 0;
+    unsigned short length    = 0u;
+    unsigned short offset    = 0u;
     int            increment = true;
 
-    static char   *kwlist[]  = {"data", "length", "data_id", "offset", "increment_counter", NULL};
+    static char   *kwlist[]  = {"data", "data_id", "length", "offset", "increment_counter", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*HH|$Hp:e2e_p06_protect",
+                                     "y*H|$HHp:e2e_p06_protect",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
+                                     &length,
                                      &offset,
                                      &increment)) {
         return NULL;
@@ -94,7 +94,10 @@ static PyObject *py_e2e_p06_protect(PyObject *module, PyObject *args, PyObject *
                         "or equal to 20.");
         goto error;
     }
-    if (length < P06HEADER_LEN || length > data.len) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < P06HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 5 <= length <= len(data).");
@@ -132,16 +135,16 @@ error:
 
 // clang-format off
 PyDoc_STRVAR(e2e_p06_check_doc,
-             "e2e_p06_check(data: bytes, length: int, data_id: int, *, offset: int = 0) -> bool \n"
+             "e2e_p06_check(data: bytes, data_id: int, *, length: int, offset: int = 0) -> bool \n"
              "Return ``True`` if CRC is correct according to AUTOSAR E2E Profile 6. \n"
              "\n"
              ":param data: \n"
              "    `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_. \n"
-             ":param length: \n"
-             "    Data byte count over which the CRC must be calculated. `length` must fulfill \n"
-             "    the following condition: ``5 <= length <= len(data)`` \n"
              ":param int data_id: \n"
              "    A unique identifier which is used to protect against masquerading. The `data_id` is a 16bit unsigned integer. \n"
+             ":param int length: \n"
+             "    Number of bytes to consider for CRC calculation. \n"
+             "    If ``length == 0``, the full buffer length (``len(data)``) is used. Otherwise, ``5 <= length <= len(data)`` must hold."
              ":param int offset: \n"
              "    Byte offset of the E2E header. \n"
              ":return:\n"
@@ -149,20 +152,20 @@ PyDoc_STRVAR(e2e_p06_check_doc,
 // clang-format on
 static PyObject *py_e2e_p06_check(PyObject *module, PyObject *args, PyObject *kwargs)
 {
-    Py_buffer     data;
-    unsigned long length;
-    unsigned long data_id;
-    unsigned long offset   = 0;
+    Py_buffer      data;
+    unsigned short data_id;
+    unsigned short length   = 0u;
+    unsigned short offset   = 0u;
 
-    static char  *kwlist[] = {"data", "length", "data_id", "offset", NULL};
+    static char   *kwlist[] = {"data", "data_id", "length", "offset", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args,
                                      kwargs,
-                                     "y*kk|$k:e2e_p06_check",
+                                     "y*H|$HH:e2e_p06_check",
                                      kwlist,
                                      &data,
-                                     &length,
                                      &data_id,
+                                     &length,
                                      &offset)) {
         return NULL;
     }
@@ -171,7 +174,10 @@ static PyObject *py_e2e_p06_check(PyObject *module, PyObject *args, PyObject *kw
                         "The length of bytearray \"data\" must be greater or equal to 5.");
         goto error;
     }
-    if (length < P06HEADER_LEN || length > data.len) {
+    if (length == 0u) {
+        length = data.len;
+    }
+    else if (length < P06HEADER_LEN || length > data.len) {
         PyErr_SetString(PyExc_ValueError,
                         "Parameter \"length\" must fulfill the following "
                         "condition: 5 <= length <= len(data).");
