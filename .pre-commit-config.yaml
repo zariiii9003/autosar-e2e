@@ -17,7 +17,7 @@ repos:
 
 # Check linting and style issues
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: "v0.15.2"
+  rev: "v0.15.15"
   hooks:
     - id: ruff-check
       args: ["--fix", "--show-fixes"]
@@ -26,14 +26,14 @@ repos:
 
 # Suggested hook if you add a .clang-format file
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v21.1.8
+  rev: v22.1.5
   hooks:
   - id: clang-format
     types: [c]
 
 - repo: https://github.com/woodruffw/zizmor-pre-commit
   # Zizmor version.
-  rev: v1.22.0
+  rev: v1.25.2
   hooks:
   # Run the linter.
   - id: zizmor
