@@ -6,7 +6,7 @@ build-backend = "scikit_build_core.build"
 name = "autosar-e2e"
 description = 'Python implementation of the AUTOSAR E2E Protocol'
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = { text = "MIT" }
 keywords = [
   "AUTOSAR",
@@ -19,7 +19,6 @@ authors = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -54,5 +53,5 @@ write_to = "src/e2e/_version.py"
 [tool.cibuildwheel]
 test-requires = "pytest"
 test-command = "pytest {project}/test"
-build-frontend = "build"
-enable = ["cpython-freethreading", "pypy"]
+build-frontend = "uv"
+enable = ["pypy"]
