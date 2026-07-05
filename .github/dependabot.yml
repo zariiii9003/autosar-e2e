@@ -6,7 +6,8 @@ updates:
     # You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 0 1 */3 *" # Run once every 3 months
     cooldown:
       default-days: 7
     groups:
