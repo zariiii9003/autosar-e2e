@@ -1,4 +1,4 @@
-from _typeshed import WriteableBuffer, ReadableBuffer
+from _typeshed import ReadableBuffer, WriteableBuffer
 
 def e2e_p07_protect(
     data: WriteableBuffer,

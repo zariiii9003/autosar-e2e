@@ -1,6 +1,6 @@
 import typing
 
-from _typeshed import WriteableBuffer, ReadableBuffer
+from _typeshed import ReadableBuffer, WriteableBuffer
 
 E2E_P01_DATAID_BOTH: typing.Final[int]
 E2E_P01_DATAID_ALT: typing.Final[int]
