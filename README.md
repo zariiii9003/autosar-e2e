@@ -33,14 +33,16 @@ pip install autosar-e2e
 ### CRC example
 ```python3
 import e2e
+
 crc: int = e2e.crc.calculate_crc8_h2f(b"\x00\x00\x00\x00")
 ```
 
 ### E2E Profile 2
 ```python3
 import e2e
+
 # create data
-data = bytearray(b"\x00" *  8)
+data = bytearray(b"\x00" * 8)
 data_id_list = b"\x00" * 16
 # increment counter and calculate CRC inplace
 e2e.p02.e2e_p02_protect(data, data_id_list, increment_counter=True)
